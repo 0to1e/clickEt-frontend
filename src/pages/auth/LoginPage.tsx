@@ -1,62 +1,131 @@
+import { ModeToggle } from "@/components/theme-toggle"; // Assuming this is ShadCN's theme toggle
+import { Card, CardContent, CardHeader } from "@/components/shadcn/card"; // Importing ShadCN's Card components
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/shadcn/form"; // Assuming Form and Input components exist in ShadCN
+import { Input } from "@/components/shadcn/input"; // Assuming Form and Input components exist in ShadCN
+import { Button } from "@/components/shadcn/button";
+import { toast } from "sonner";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { useForm } from "react-hook-form";
+import { Label } from "@/components/shadcn/label";
+import { Link } from "react-router-dom";
+
+// Simplified form schema
+const FormSchema = z.object({
+  emailOrUsername: z
+    .string()
+    .min(1, { message: "This field cannot be empty." }),
+
+  password: z.string().min(1, { message: "Password cannot be empty." }),
+});
+
 const LoginPage = () => {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      emailOrUsername: "",
+      password: "",
+    },
+    mode: "onSubmit",
+  });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast("Login successful", {
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+      action: {
+        label: "Undo",
+        onClick: () => console.log("Undo"),
+      },
+    });
+  }
+
   return (
-    <div className="w-full h-screen bg-dark_bg text-white flex justify-center items-center">
-      <div className="bg-on_dark_bg w-[60vw] h-[60vh] rounded-sm flex justify-center items-stretch">
-        <div className="flex basis-[60%]">
-          <form
-            className="flex flex-col items-center w-full h-full justify-center px-20 gap-5"
-            onSubmit={() => {}}
-            method="POST"
-          >
-            <input
-              className="w-full bg-[#3E2E2E] p-1 rounded-sm border border-primary outline-none"
-              placeholder="Full name"
-              type="text"
-              name="full_name"
-              id="full_name"
-            />
-            <input
-              className="w-full bg-[#3E2E2E] p-1 rounded-sm border border-primary outline-none"
-              placeholder="User name"
-              type="text"
-              name="user_name"
-              id="user_name"
-            />
-            <input
-              className="w-full bg-[#3E2E2E] p-1 rounded-sm border border-primary outline-none"
-              placeholder="Email"
-              type="email"
-              name="email"
-              id="email"
-            />
-            <input
-              className="w-full bg-[#3E2E2E] p-1 rounded-sm border border-primary outline-none"
-              placeholder="Phone number"
-              type="number"
-              name="phone"
-              id="phone"
-            />
-            <input
-              className="w-full bg-[#3E2E2E] p-1 rounded-sm border border-primary outline-none"
-              placeholder="Password"
-              type="password"
-              name="password"
-              id="password"
-            />
-          </form>
-        </div>
-        <div className="flex basis-[40%]">
+    <div className="w-full h-screen flex justify-center items-center bg-background dark:bg-dark_bg text-foreground">
+      <Card className="w-[60vw] min-h-[60vh] flex justify-center items-stretch rounded-md">
+        <CardContent className="flex flex-col gap-3 basis-[60%] justify-center items-center p-6">
+          <CardHeader className="flex justify-between items-center p-4">
+            <h2 className="text-2xl font-semibold">Login</h2>
+            <ModeToggle />
+          </CardHeader>
+          <CardContent className="w-full flex flex-col gap-3 ">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-3 flex flex-col justify-center"
+              >
+                {/* Email/Username Field */}
+                <FormField
+                  control={form.control}
+                  name="emailOrUsername"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Email or Username" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Password Field */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Submit Button */}
+                <div className="mx-auto flex flex-col gap-6">
+                  <Button type="submit" className="mx-auto px-10">
+                    Login
+                  </Button>
+
+                  <Label htmlFor="navigateLogin">
+                    Don't have an account yet?
+                    <Link to={"/register"}>
+                      <span className="underline"> Register</span>
+                    </Link>
+                  </Label>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </CardContent>
+        <div className="flex basis-[40%] isolate rounded-r-md">
           <div
-            className="w-full bg-primary opacity-[70%]"
+            className="z-0 w-full rounded-r-md"
             style={{
-              backgroundImage: "frontend/src/assets/auth/login.png",
-              objectFit: "cover",
+              backgroundImage: "url(/src/assets/auth/login.png)",
+              objectFit: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
             }}
-          >
-            <div>rohan</div>
-          </div>
+          />
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
