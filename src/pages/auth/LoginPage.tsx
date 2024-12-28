@@ -1,13 +1,12 @@
-import { ModeToggle } from "@/components/theme-toggle"; // Assuming this is ShadCN's theme toggle
-import { Card, CardContent, CardHeader } from "@/components/shadcn/card"; // Importing ShadCN's Card components
+import { Card, CardContent, CardHeader } from "@/components/shadcn/card";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/shadcn/form"; // Assuming Form and Input components exist in ShadCN
-import { Input } from "@/components/shadcn/input"; // Assuming Form and Input components exist in ShadCN
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input"; 
 import { Button } from "@/components/shadcn/button";
 import { toast } from "sonner";
 
@@ -22,9 +21,9 @@ import { Link } from "react-router-dom";
 const FormSchema = z.object({
   emailOrUsername: z
     .string()
-    .min(1, { message: "This field cannot be empty." }),
+    .min(1, { message: "Please provide your username or email." }),
 
-  password: z.string().min(1, { message: "Password cannot be empty." }),
+  password: z.string().min(1, { message: "Please provide your password." }),
 });
 
 const LoginPage = () => {
@@ -57,7 +56,6 @@ const LoginPage = () => {
         <CardContent className="flex flex-col gap-3 basis-[60%] justify-center items-center p-6">
           <CardHeader className="flex justify-between items-center p-4">
             <h2 className="text-2xl font-semibold">Login</h2>
-            <ModeToggle />
           </CardHeader>
           <CardContent className="w-full flex flex-col gap-3 ">
             <Form {...form}>
@@ -72,7 +70,7 @@ const LoginPage = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Email or Username" {...field} />
+                        <Input placeholder="E-mail/ Username" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -102,11 +100,10 @@ const LoginPage = () => {
                   <Button type="submit" className="mx-auto px-10">
                     Login
                   </Button>
-
                   <Label htmlFor="navigateLogin">
-                    Don't have an account yet?
+                    Not registered yet?{" "}
                     <Link to={"/register"}>
-                      <span className="underline"> Register</span>
+                      <span className="underline">Register</span>
                     </Link>
                   </Label>
                 </div>

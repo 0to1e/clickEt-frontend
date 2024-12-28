@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { ModeToggle } from "@/components/theme-toggle";
 import { Card, CardContent, CardHeader } from "@/components/shadcn/card";
 import {
   Form,
@@ -91,7 +90,6 @@ const RegistrationPage = () => {
         <CardContent className="flex flex-col gap-3 basis-[60%] justify-center items-center p-6">
           <CardHeader className="flex justify-between items-center p-4">
             <h2 className="text-2xl font-semibold">Register</h2>
-            <ModeToggle />
           </CardHeader>
           <CardContent className="w-full flex flex-col gap-3 ">
             <Form {...form}>
