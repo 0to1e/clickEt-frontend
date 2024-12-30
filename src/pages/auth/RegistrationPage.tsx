@@ -1,3 +1,4 @@
+// src/pages/auth/RegistrationPage.tsx
 import * as React from "react";
 
 import { Card, CardContent, CardHeader } from "@/components/shadcn/card";
@@ -10,24 +11,23 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { toast } from "sonner";
-
+import { Label } from "@/components/shadcn/label";
 import { Eye, EyeOff } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Label } from "@/components/shadcn/label";
 import { Link } from "react-router-dom";
 
+import { useRegister } from "@/api/authApi";
 const FormSchema = z.object({
-  fullname: z
+  full_name: z
     .string()
     .min(2, { message: "Full name must be at least 2 characters." })
     .max(50, { message: "Full name must be at most 50 characters." }),
 
-  username: z
+  user_name: z
     .string()
     .min(1, { message: "Username must be at least 1 character." })
     .max(10, { message: "Username must be at most 10 characters." })
@@ -40,7 +40,7 @@ const FormSchema = z.object({
     .email({ message: "Invalid email format." })
     .min(2, { message: "Email must be at least 2 characters." }),
 
-  phone: z.string().regex(/^(98|97)\d{8}$/, {
+  phone_number: z.string().regex(/^(98|97)\d{8}$/, {
     message: "Phone number must be a valid Nepali mobile number.",
   }),
 
@@ -57,31 +57,22 @@ const FormSchema = z.object({
 });
 
 const RegistrationPage = () => {
+  const registerMutation = useRegister();
   const [showPassword, setShowPassword] = React.useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      fullname: "",
-      username: "",
+      full_name: "",
+      user_name: "",
       email: "",
-      phone: "",
+      phone_number: "",
       password: "",
     },
     mode: "onSubmit",
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("Event has been created", {
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      action: {
-        label: "Undo",
-        onClick: () => console.log("Undo"),
-      },
-    });
+    registerMutation.mutate(data);
   }
 
   return (
@@ -99,7 +90,7 @@ const RegistrationPage = () => {
               >
                 <FormField
                   control={form.control}
-                  name="fullname"
+                  name="full_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -111,7 +102,7 @@ const RegistrationPage = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="user_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -139,7 +130,7 @@ const RegistrationPage = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="phone_number"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>

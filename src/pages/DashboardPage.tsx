@@ -1,3 +1,4 @@
+// src/pages/DashboardPage.tsx
 import HeroCarousel from "@/components/custom/HeroCarousel";
 import NowShowingSection from "@/components/pages/dashboard/NowShowingSection";
 

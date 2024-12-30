@@ -1,3 +1,5 @@
+// src/pages/auth/LoginPage.tsx
+import * as React from 'react'
 import { Card, CardContent, CardHeader } from "@/components/shadcn/card";
 import {
   Form,
@@ -6,20 +8,22 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/shadcn/form";
-import { Input } from "@/components/shadcn/input"; 
+import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { toast } from "sonner";
+import { Label } from "@/components/shadcn/label";
+import { EyeOff, Eye } from 'lucide-react';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { useForm } from "react-hook-form";
-import { Label } from "@/components/shadcn/label";
 import { Link } from "react-router-dom";
+
+import { useLogin } from "@/api/authApi";
 
 // Simplified form schema
 const FormSchema = z.object({
-  emailOrUsername: z
+  user_name: z
     .string()
     .min(1, { message: "Please provide your username or email." }),
 
@@ -27,27 +31,19 @@ const FormSchema = z.object({
 });
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = React.useState(false);
+  const loginMutation = useLogin();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      emailOrUsername: "",
+      user_name: "",
       password: "",
     },
     mode: "onSubmit",
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("Login successful", {
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      action: {
-        label: "Undo",
-        onClick: () => console.log("Undo"),
-      },
-    });
+    loginMutation.mutate(data);
   }
 
   return (
@@ -66,7 +62,7 @@ const LoginPage = () => {
                 {/* Email/Username Field */}
                 <FormField
                   control={form.control}
-                  name="emailOrUsername"
+                  name="user_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -83,13 +79,26 @@ const LoginPage = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
+                      <div className="relative">
                         <Input
+                          type={showPassword ? "text" : "password"}
                           placeholder="Password"
-                          type="password"
                           {...field}
                         />
-                      </FormControl>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

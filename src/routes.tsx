@@ -1,3 +1,4 @@
+// src/routes.tsx
 import { createBrowserRouter } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import Login from "./pages/auth/LoginPage";

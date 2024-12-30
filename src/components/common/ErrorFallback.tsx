@@ -1,9 +1,11 @@
+// src/components/common/ErrorFallback.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
 import { DotPattern } from "@/components/shadcn/dot-pattern";
-import { Button } from "../shadcn/button";
 import { useNavigate } from "react-router-dom";
+import InteractiveHoverButton from "@/components/shadcn/interactive-hover-button";
+import { ArrowRight } from "lucide-react";
 function DotPatternDemo() {
   const navigate = useNavigate();
   return (
@@ -14,14 +16,15 @@ function DotPatternDemo() {
       <span className="text-primary text-2xl font-semibold">
         This page doesn't exist !
       </span>
-      <Button
-        className="text-md bg-stone-600 hover:bg-primary"
+      <InteractiveHoverButton
+      className="w-52 bg-stone-600"
+      icon={<ArrowRight/>}
         onClick={() => {
           navigate("/");
         }}
+      text="Head back"
       >
-        Head back !
-      </Button>
+      </InteractiveHoverButton>
       <DotPattern
         className={cn(
           "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
