@@ -7,6 +7,8 @@ import Layout from "@/components/layouts/UserLayout";
 import NoLayout from "@/components/layouts/NoneLayout";
 import Test from "./components/common/LoadingFallback";
 import ErrorFallback from "./components/common/ErrorFallback";
+import ResetPasswordPage from "./pages/auth/PasswordResetPage";
+import ForgetPasswordPage from "./pages/auth/ForgetPasswordPage";
 
 export const routers = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ export const routers = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/forget-password",
+        element: <ForgetPasswordPage />,
+      },
+      {
+        path: "/reset-password/:token", 
+        element: <ResetPasswordPage />,
       },
       {
         path: "/t",

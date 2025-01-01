@@ -10,3 +10,8 @@ export interface RegistrationCredentials {
   phone_number: string;
   password: string;
 }
+
+export interface ResetCredentials {
+  token: string;
+  password: string;
+}

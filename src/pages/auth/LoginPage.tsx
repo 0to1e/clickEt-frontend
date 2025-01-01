@@ -1,5 +1,5 @@
 // src/pages/auth/LoginPage.tsx
-import * as React from 'react'
+import * as React from "react";
 import { Card, CardContent, CardHeader } from "@/components/shadcn/card";
 import {
   Form,
@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { Label } from "@/components/shadcn/label";
-import { EyeOff, Eye } from 'lucide-react';
+import { EyeOff, Eye } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -103,9 +103,13 @@ const LoginPage = () => {
                     </FormItem>
                   )}
                 />
-
+                <Label htmlFor="password-reset">
+                <Link to={"/forget-password"}>
+                  <span className="underline">Forgot Password?</span>
+                </Link>
+                </Label>
                 {/* Submit Button */}
-                <div className="mx-auto flex flex-col gap-6">
+                <div className="mx-auto pt-5 flex flex-col gap-6">
                   <Button type="submit" className="mx-auto px-10">
                     Login
                   </Button>

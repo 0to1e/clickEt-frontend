@@ -1,40 +1,37 @@
 // src/api/authApi.ts
-import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "@/utils/axiosInstance";
-import { toast } from "sonner";
-
 import {
-  LoginCredentials,
-  RegistrationCredentials,
-} from "@/interfaces/auth/IAuth";
+  loginUser,
+  registerUser,
+  resetPassword,
+  sendResetEmail,
+} from "@/service/authService";
 
-const loginUser = async (credentials: LoginCredentials) => {
-  const { data } = await axiosInstance.post("/auth/login", credentials);
-  return data;
-};
-const registerUser = async (credentials: RegistrationCredentials) => {
-  const { data } = await axiosInstance.post("/auth/register", credentials);
-  return data;
-};
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useLogin = () => {
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      toast.success("Login successful");
+    onSuccess: () => {
+      toast.success("Login successful", {
+        className: "text-white border-success", // Tailwind classes for success toast
+      });
+
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "Login failed", {
+        className: "bg-error text-white border-error", // Tailwind classes for error toast
+      });
     },
   });
 };
 export const useRegister = () => {
   return useMutation({
     mutationFn: registerUser,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Registration successful");
       setTimeout(() => {
         window.location.href = "/";
@@ -42,6 +39,37 @@ export const useRegister = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || "Registration failed");
+    },
+  });
+};
+export const useForgetPassword = () => {
+  return useMutation({
+    mutationFn: sendResetEmail,
+    onSuccess: () => {
+      toast.success("Please check your inbox for reset link.");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to send reset link");
+    },
+  });
+};
+
+export const usePasswordReset = () => {
+  return useMutation({
+    mutationFn: resetPassword,
+    onSuccess: () => {
+      toast.success("Password successfully reset", {
+        className: "text-white border-success",
+      });
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Password Reset failed", {
+        className: "bg-error text-white border-error",
+      });
     },
   });
 };
