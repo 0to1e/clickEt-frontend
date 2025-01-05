@@ -1,6 +1,6 @@
 // src/routes.tsx
 import { createBrowserRouter } from "react-router-dom";
-import DashboardPage from "./pages/DashboardPage";
+import DashboardPage from "./pages/HomePage";
 import Login from "./pages/auth/LoginPage";
 import Register from "./pages/auth/RegistrationPage";
 import Layout from "@/components/layouts/UserLayout";

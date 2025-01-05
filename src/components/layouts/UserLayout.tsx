@@ -1,15 +1,15 @@
-import { Outlet } from "react-router-dom";
 import ClientHeader from "../common/clientHeader";
 import Footer from "../common/Footer";
+import { ReactNode } from "react";
 
-const Layout = () => {
+const UserLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className=" flex flex-col min-h-screen ">
       <ClientHeader />
-      <Outlet />
-      <Footer/>
+      {children}
+      <Footer />
     </div>
   );
 };
 
-export default Layout;
+export default UserLayout;

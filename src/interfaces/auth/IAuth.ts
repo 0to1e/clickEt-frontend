@@ -1,4 +1,5 @@
 // src/interfaces/auth/IAuth.ts
+
 export interface LoginCredentials {
   user_name: string;
   password: string;
@@ -14,4 +15,11 @@ export interface RegistrationCredentials {
 export interface ResetCredentials {
   token: string;
   password: string;
+}
+
+export enum ERoles {
+  ADMIN = "admin",
+  EDITOR = "editor",
+  VIEWER = "viewer",
+  GUEST = "guest",
 }

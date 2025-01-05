@@ -1,8 +1,8 @@
-// src/pages/DashboardPage.tsx
+// src/pages/HomePage.tsx
 import HeroCarousel from "@/components/custom/HeroCarousel";
 import NowShowingSection from "@/components/pages/dashboard/NowShowingSection";
 
-const DashboardPage = () => {
+const HomePage = () => {
   return (
     <>
       <HeroCarousel />
@@ -11,4 +11,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default HomePage;

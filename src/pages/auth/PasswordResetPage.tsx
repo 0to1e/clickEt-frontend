@@ -31,7 +31,7 @@ const resetSchema = z
     path: ["confirmPassword"],
   });
 
-function ResetPasswordPage() {
+const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
@@ -135,6 +135,6 @@ function ResetPasswordPage() {
       </Card>
     </div>
   );
-}
+};
 
 export default ResetPasswordPage;
