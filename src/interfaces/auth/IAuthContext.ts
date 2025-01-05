@@ -1,0 +1,23 @@
+
+export interface IUser {
+    full_name: string;
+    user_name: string;
+    email: string;
+    profile_url:string;
+    role: string;
+  }
+
+  export enum ERoles {
+    ADMIN = "admin",
+    EDITOR = "editor",
+    VIEWER = "viewer",
+    GUEST = "guest",
+  }
+
+  export interface AuthContextType {
+    user: IUser | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    checkAuthStatus: () => Promise<void>;
+    logout: () => Promise<void>;
+  }

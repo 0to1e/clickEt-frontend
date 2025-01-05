@@ -17,9 +17,3 @@ export interface ResetCredentials {
   password: string;
 }
 
-export enum ERoles {
-  ADMIN = "admin",
-  EDITOR = "editor",
-  VIEWER = "viewer",
-  GUEST = "guest",
-}

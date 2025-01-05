@@ -1,6 +1,6 @@
 // import { ERoles } from "@/interfaces/auth/IAuthContext";
 // import { ERoles } from "@/interfaces/auth/IAuth";
-import { ERoles } from "@/interfaces/auth/IAuth";
+import { ERoles } from "@/interfaces/auth/IAuthContext";
 import { ELayouts, IRouterConfig } from "@/interfaces/IRouterConfig";
 
 export const routeConfig: IRouterConfig = {
@@ -46,6 +46,12 @@ export const routeConfig: IRouterConfig = {
     layout: ELayouts.NA,
     isProtected: false,
     componentLocation: "pages/NotFoundPage",
+  },
+  UnauthorizedPage: {
+    path: "/unauthorized",
+    layout: ELayouts.NA,
+    isProtected: false,
+    componentLocation: "pages/UnauthorizedPage",
   },
   TestPage: {
     path: "/test",

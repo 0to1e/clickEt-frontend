@@ -2,8 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../shadcn/button";
 import { ModeToggle } from "../shadcn/theme-toggle";
 import Menu from "../custom/ClientNavMenu";
+import { useAuth } from "@/hooks/useAuth";
 
 const ClientHeader = () => {
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const menuCfg = [
     { title: "Home", href: "/" },
@@ -19,25 +21,30 @@ const ClientHeader = () => {
       <div className="hidden sm:flex flex-col max-sm:pl-0 max-md:pl-[10vw] md:basis-1/3 items-center">
         <Menu config={menuCfg} />
       </div>
-      <div className="space-x-2.5 flex justify-end md:basis-1/3">
+      <div className="space-x-2.5 flex justify-end items-center md:basis-1/3">
         <ModeToggle />
+        {!isAuthenticated && (
+          <div className="hidden sm:flex sm:flex-col md:flex-row gap-3">
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Sign in
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Register
+            </Button>
+          </div>
+        )}
+        {isAuthenticated && (
+          <span>Hello, {user?.full_name}</span>
+        )}
 
-        <div className="hidden sm:flex sm:flex-col md:flex-row gap-3">
-          <Button
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Sign in
-          </Button>
-          <Button
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register
-          </Button>
-        </div>
       </div>
     </header>
   );

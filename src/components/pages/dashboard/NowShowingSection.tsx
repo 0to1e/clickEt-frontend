@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/shadcn/card";
-
 const NowShowingSection = () => {
   return (
     <section className="flex justify-start w-full pl-[10vw]">

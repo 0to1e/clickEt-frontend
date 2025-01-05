@@ -1,4 +1,4 @@
-import { ERoles } from "./auth/IAuth";
+import { ERoles } from "./auth/IAuthContext";
 
 export enum ELayouts {
   CLIENT = "default",
