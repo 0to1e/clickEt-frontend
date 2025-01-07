@@ -31,7 +31,7 @@ const Router = () => {
             key={config.path}
             path={config.path}
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <LayoutComponent>
                   <Suspense fallback={<LoadingFallback />}>
                     <ErrorBoundary
@@ -46,7 +46,7 @@ const Router = () => {
                     </ErrorBoundary>
                   </Suspense>
                 </LayoutComponent>
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
         );

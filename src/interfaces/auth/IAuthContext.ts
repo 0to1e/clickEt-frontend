@@ -3,7 +3,7 @@ export interface IUser {
     full_name: string;
     user_name: string;
     email: string;
-    profile_url:string;
+    profile_URL:string;
     role: string;
   }
 

@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../shadcn/button";
 import { ModeToggle } from "../shadcn/theme-toggle";
 import Menu from "../custom/ClientNavMenu";
 import { useAuth } from "@/hooks/useAuth";
+import { getNameInitials } from "@/utils/getNameInitials";
 
 const ClientHeader = () => {
   const { user, isAuthenticated } = useAuth();
@@ -42,9 +43,16 @@ const ClientHeader = () => {
           </div>
         )}
         {isAuthenticated && (
-          <span>Hello, {user?.full_name}</span>
+          <Link to={"/"}>
+            <div className="rounded-full size-10 center bg-primary text-white cursor-pointer overflow-hidden">
+              <img
+                className="bg-primary"
+                src={user?.profile_URL}
+                alt={getNameInitials(user?.full_name || "")}
+              />
+            </div>
+          </Link>
         )}
-
       </div>
     </header>
   );

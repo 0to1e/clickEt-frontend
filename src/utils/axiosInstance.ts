@@ -22,16 +22,13 @@ axiosInstance.interceptors.response.use(
       originalRequest.retryCount = originalRequest.retryCount || 0;
       originalRequest.retryCount += 1;
       try {
-        const { refreshToken } = useAuth();
-        await refreshToken();
-
         // Retry the original request with the new token
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         // If token refresh fails, clear the user state and redirect to login
         const { logout } = useAuth();
         await logout();
-        window.location.href = '/login'; // Redirect to login page
+        window.location.href = "/login"; // Redirect to login page
         return Promise.reject(refreshError);
       }
     }
