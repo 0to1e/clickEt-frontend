@@ -1,41 +1,73 @@
 import { useAuth } from '@/hooks/useAuth';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { routeConfig } from '@/lib/routerConfig';
 import { ERoles } from '@/interfaces/auth/IAuthContext';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user} = useAuth();
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
-  const params = useParams();
 
+  // Wait for authentication check to complete
+  if (isLoading) {
+    return null; // or your loading component
+  }
 
-  // Find the current route in the routeConfig
-  const currentRoute = Object.values(routeConfig).find((route) => {
-    // Handle dynamic routes (e.g., `/auth/reset-password/:token`)
-    const routePath = route.path.replace(/:\w+/g, (param) => params[param] || '');
-    return routePath === location.pathname;
+  // Find the route configuration for the current path
+  const currentRoute = Object.values(routeConfig).find(route => {
+    // Convert route path to regex to handle dynamic parameters
+    const pathRegex = new RegExp(
+      '^' + route.path.replace(/:\w+/g, '([^/]+)') + '$'
+    );
+    return pathRegex.test(location.pathname);
   });
 
-  if (!currentRoute) {
-    return <Navigate to="/404" replace />; // Route not found, redirect to 404
+  // Case 4: Route not found in config - redirect to 404
+  // Exclude the 404 page itself from this check to prevent infinite loops
+  if (!currentRoute && location.pathname !== '/404') {
+    return <Navigate to="/404" replace />;
   }
 
-  const isAuthPage = ['/login', '/register'].includes(location.pathname);
-  if (isAuthenticated && isAuthPage) {
-    return <Navigate to="/" replace />;
+  // Special case for unauthorized to login flow
+  if (location.pathname === '/login') {
+    // Allow access to login if user came from unauthorized page or clicking "Get Permission"
+    const cameFromUnauthorized = location.state?.from === '/unauthorized';
+    const isGetPermissionFlow = location.state?.getPermission === true;
+    
+    if (cameFromUnauthorized || isGetPermissionFlow) {
+      return <>{children}</>;
+    }
+    // Otherwise, redirect authenticated users
+    if (isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
   }
 
-  // If the route is protected and the user is not authenticated, redirect to login
-  if (currentRoute.isProtected && !isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  // Regular login/register pages check
+  if (['/register'].includes(location.pathname)) {
+    if (isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
   }
 
-  // If the route requires specific roles and the user doesn't have them, redirect to unauthorized
-  if (currentRoute.roles && !currentRoute.roles.includes(user?.role as ERoles)) {
-    return <Navigate to="/unauthorized" replace />;
+  // Case 1: Protected route but not authenticated
+  if (currentRoute?.isProtected && !isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
-  return children;
+  // Case 3: Role-based access check
+  if (currentRoute?.roles && isAuthenticated && user) {
+    const hasRequiredRole = currentRoute.roles.includes(user.role as ERoles);
+    if (!hasRequiredRole) {
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  // If all checks pass, render the route
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

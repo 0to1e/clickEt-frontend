@@ -1,7 +1,7 @@
-const TestPage = () => {
-  return (
-    <div>TestPage</div>
-  )
-}
+import PaymentMethods from "@/components/pages/payment/PaymentMethodSection";
 
-export default TestPage
+const TestPage = () => {
+  return <PaymentMethods />;
+};
+
+export default TestPage;

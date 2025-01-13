@@ -1,6 +1,5 @@
-// src/Router.tsx
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { routeConfig } from "@/lib/routerConfig";
 import { ELayouts } from "@/interfaces/IRouterConfig";
 import LoadingFallback from "@/components/common/LoadingFallback";
@@ -31,7 +30,7 @@ const Router = () => {
             key={config.path}
             path={config.path}
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <LayoutComponent>
                   <Suspense fallback={<LoadingFallback />}>
                     <ErrorBoundary
@@ -46,11 +45,13 @@ const Router = () => {
                     </ErrorBoundary>
                   </Suspense>
                 </LayoutComponent>
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
         );
       })}
+      {/* Fallback route for undefined paths */}
+      <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
   );
 };
