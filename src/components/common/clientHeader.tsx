@@ -43,7 +43,7 @@ const ClientHeader = () => {
           </div>
         )}
         {isAuthenticated && (
-          <Link to={"/"}>
+          <Link to={"/uprofile"}>
             <div className="rounded-full size-10 center bg-primary text-white cursor-pointer overflow-hidden">
               <img
                 className="bg-primary"

@@ -15,7 +15,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Call the server to check authentication status
       const { data } = await axiosInstance.get("/auth/user/status");
-      console.log("User data:", data); // Debugging log
       setUser(data.user);
       setIsAuthenticated(true);
     } catch (error) {
@@ -55,8 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }

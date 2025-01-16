@@ -7,7 +7,7 @@ export interface IUser {
 }
 
 export enum ERoles {
-  ADMIN = "admin",
+  ADMIN = "ADMIN",
   EDITOR = "editor",
   VIEWER = "viewer",
   USER = "user",

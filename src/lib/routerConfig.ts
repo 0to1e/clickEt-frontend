@@ -6,7 +6,7 @@ export const routeConfig: IRouterConfig = {
     path: "/",
     layout: ELayouts.CLIENT,
     isProtected: false,
-  componentLocation: "pages/HomePage",
+    componentLocation: "pages/HomePage",
   },
   LoginPage: {
     path: "/login",
@@ -21,7 +21,7 @@ export const routeConfig: IRouterConfig = {
     componentLocation: "pages/auth/RegistrationPage",
   },
   ForgetPasswordPage: {
-    path: "/forget-password",
+    path: "/auth/forget-password",
     layout: ELayouts.NA,
     isProtected: false,
     componentLocation: "pages/auth/ForgetPasswordPage",
@@ -56,5 +56,17 @@ export const routeConfig: IRouterConfig = {
     layout: ELayouts.NA,
     isProtected: true,
     componentLocation: "pages/TestPage",
+  },
+  ProfilePicturePage: {
+    path: "/uprofile",
+    layout: ELayouts.NA,
+    isProtected: true,
+    componentLocation: "components/common/ImageUploads",
+  },
+  AddMovies: {
+    path: "/movie/add",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    componentLocation: "pages/movie/AddmovieForm",
   },
 };

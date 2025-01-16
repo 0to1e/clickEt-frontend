@@ -6,7 +6,8 @@ const HomePage = () => {
   return (
     <>
       <HeroCarousel />
-      <NowShowingSection />
+      <NowShowingSection variant="showing"/>
+      <NowShowingSection variant="upcoming"/>
     </>
   );
 };

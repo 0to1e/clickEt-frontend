@@ -11,30 +11,26 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { Label } from "@/components/shadcn/label";
+
 import { EyeOff, Eye } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { LoginFormSchema, LoginFormValues } from "@/lib/formSchemas/authFormSchema";
 
 import { useForm } from "react-hook-form";
+
 import { Link } from "react-router-dom";
 
 import { useLogin } from "@/api/authApi";
 
 // Simplified form schema
-const FormSchema = z.object({
-  user_name: z
-    .string()
-    .min(1, { message: "Please provide your username or email." }),
 
-  password: z.string().min(1, { message: "Please provide your password." }),
-});
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const loginMutation = useLogin();
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       user_name: "",
       password: "",
@@ -42,7 +38,7 @@ const LoginPage = () => {
     mode: "onSubmit",
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: LoginFormValues) {
     loginMutation.mutate(data);
   }
 
@@ -104,7 +100,7 @@ const LoginPage = () => {
                   )}
                 />
                 <Label htmlFor="password-reset">
-                <Link to={"/forget-password"}>
+                <Link to={"/auth/forget-password"}>
                   <span className="underline">Forgot Password?</span>
                 </Link>
                 </Label>

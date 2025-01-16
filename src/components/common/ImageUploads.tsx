@@ -1,10 +1,11 @@
-import { useState, useRef, DragEvent, ChangeEvent } from 'react';
+import { useState, useRef, DragEvent, ChangeEvent } from "react";
 import { Button } from "@/components/shadcn/button";
 import { Card } from "@/components/shadcn/card";
 import { Upload, X } from "lucide-react";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { useAuth } from "@/hooks/useAuth";
 import { getNameInitials } from "@/utils/getNameInitials";
+import { toast } from "sonner";
 
 const ImageUploader = () => {
   const { user } = useAuth();
@@ -27,13 +28,13 @@ const ImageUploader = () => {
     setDragActive(false);
 
     const file = e.dataTransfer.files[0];
-    if (file?.type.startsWith('image/')) setImage(file);
+    if (file?.type.startsWith("image/")) setImage(file);
   };
 
   // Handle file input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file?.type.startsWith('image/')) setImage(file);
+    if (file?.type.startsWith("image/")) setImage(file);
   };
 
   // Handle image upload
@@ -47,13 +48,23 @@ const ImageUploader = () => {
     const formData = new FormData();
     formData.append("image", image);
 
+    if (user?.profile_URL && user.profile_URL !== "null") {
+      formData.append("currentImageUrl", user.profile_URL);
+    }
+
     try {
-      const response = await axiosInstance.post("/auth/user/updateimage", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const response = await axiosInstance.post(
+        "/auth/user/updateimage",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       if (response.status === 200) {
-        alert("Profile image uploaded successfully!");
+        toast.success("Login successful", {
+          className: "text-white border-success", // Tailwind classes for success toast
+        });
         setImage(null);
       } else {
         throw new Error(response.data.message || "Upload failed");
@@ -70,7 +81,7 @@ const ImageUploader = () => {
   const handleRemove = () => {
     setImage(null);
     setDragActive(false);
-    if (inputRef.current) inputRef.current.value = '';
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   return (
@@ -78,7 +89,9 @@ const ImageUploader = () => {
       <Card className="w-96 h-96 flex flex-col items-center justify-center gap-12 p-6">
         <div
           className={`relative w-64 h-64 rounded-full overflow-hidden ${
-            dragActive ? 'before:absolute before:inset-0 before:rounded-full before:border-4 before:border-primary before:animate-pulse before:z-10' : ''
+            dragActive
+              ? "before:absolute before:inset-0 before:rounded-full before:border-4 before:border-primary before:animate-pulse before:z-10"
+              : ""
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -92,13 +105,13 @@ const ImageUploader = () => {
             accept="image/*"
             onChange={handleChange}
           />
-          
+
           {!image && user?.profile_URL === "null" && (
             <div className="w-full h-full bg-primary center text-white text-8xl">
               {getNameInitials(user?.full_name || "")}
             </div>
           )}
-          
+
           {!image && user?.profile_URL && user.profile_URL !== "null" && (
             <img
               src={user.profile_URL}
@@ -106,7 +119,7 @@ const ImageUploader = () => {
               className="w-full h-full object-cover"
             />
           )}
-          
+
           {image && (
             <div className="relative w-full h-full">
               <img
@@ -122,7 +135,7 @@ const ImageUploader = () => {
               </button>
             </div>
           )}
-          
+
           <div
             className="absolute inset-0 flex items-center justify-center bg-primary/0 hover:bg-primary/80 transition-colors group cursor-pointer"
             onClick={() => inputRef.current?.click()}
@@ -138,13 +151,13 @@ const ImageUploader = () => {
               onClick={handleRemove}
               className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-secondary hover:bg-primary text-sm font-medium rounded-sm shadow-lg transition-colors"
             >
-              <X/>
+              <X />
             </div>
           )}
         </div>
 
-        <Button 
-          onClick={handleUpload} 
+        <Button
+          onClick={handleUpload}
           disabled={!image || uploading}
           className="w-full"
         >
