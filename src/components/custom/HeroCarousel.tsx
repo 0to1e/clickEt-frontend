@@ -54,7 +54,7 @@ export default function HeroCarousel() {
   }, [isAutoScrolling, lastInteractionTime, nextSlide]);
 
   return (
-    <div className="relative w-screen h-[80vh] overflow-hidden">
+    <div className="relative w-full max-md:h-[80vw] h-[80vh] overflow-hidden">
       <div className="w-full h-full overflow-hidden">
         {images.map((src, index) => (
           <div

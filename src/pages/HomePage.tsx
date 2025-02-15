@@ -1,6 +1,6 @@
 // src/pages/HomePage.tsx
 import HeroCarousel from "@/components/custom/HeroCarousel";
-import NowShowingSection from "@/components/pages/dashboard/NowShowingSection";
+import NowShowingSection from "@/components/pageComponents/dashboard/NowShowingSection";
 
 const HomePage = () => {
   return (

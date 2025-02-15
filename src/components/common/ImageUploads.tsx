@@ -2,17 +2,17 @@ import { useState, useRef, DragEvent, ChangeEvent } from "react";
 import { Button } from "@/components/shadcn/button";
 import { Card } from "@/components/shadcn/card";
 import { Upload, X } from "lucide-react";
-import { axiosInstance } from "@/utils/axiosInstance";
 import { useAuth } from "@/hooks/useAuth";
 import { getNameInitials } from "@/utils/getNameInitials";
-import { toast } from "sonner";
+import { useImageUpload } from "@/api/authApi";
+import { ImageFile } from "@/interfaces/auth/IProfileImage";
 
 const ImageUploader = () => {
   const { user } = useAuth();
   const [dragActive, setDragActive] = useState<boolean>(false);
-  const [image, setImage] = useState<File | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
+  const [image, setImage] = useState<ImageFile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { mutate: uploadImage, isPending: uploading } = useImageUpload();
 
   // Handle drag events
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -38,43 +38,13 @@ const ImageUploader = () => {
   };
 
   // Handle image upload
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (!image) {
       alert("Please select an image to upload.");
       return;
     }
 
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("image", image);
-
-    if (user?.profile_URL && user.profile_URL !== "null") {
-      formData.append("currentImageUrl", user.profile_URL);
-    }
-
-    try {
-      const response = await axiosInstance.post(
-        "/auth/user/updateimage",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Login successful", {
-          className: "text-white border-success", // Tailwind classes for success toast
-        });
-        setImage(null);
-      } else {
-        throw new Error(response.data.message || "Upload failed");
-      }
-    } catch (error: any) {
-      console.error("Upload error:", error);
-      alert(error.response?.data?.message || "Upload failed");
-    } finally {
-      setUploading(false);
-    }
+    uploadImage({ image, currentImageUrl: user?.profile_URL || undefined });
   };
 
   // Handle image removal

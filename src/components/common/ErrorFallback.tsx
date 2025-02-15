@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/shadcn/button"; // Import shadcn Button
+import { Button } from "@/components/shadcn/button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/shadcn/card"; // Import shadcn Card components
+} from "@/components/shadcn/card"; 
 
 interface IErrorFallbackProps {
   resetErrorBoundary: (...args: unknown[]) => void;

@@ -25,10 +25,14 @@ import {
 } from "@/components/shadcn/form";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { MovieFormValues, movieSchema } from "@/lib/formSchemas/movieFormSchema";
-import { axiosInstance } from "@/utils/axiosInstance";
+import {
+  MovieFormValues,
+  movieSchema,
+} from "@/lib/formSchemas/movieFormSchema";
+import { useAddMovie } from "@/api/movieApi";
 
 const MovieForm = () => {
+  const movieMutation = useAddMovie();
   const form = useForm<MovieFormValues>({
     resolver: zodResolver(movieSchema),
     defaultValues: {
@@ -48,21 +52,7 @@ const MovieForm = () => {
   });
 
   const onSubmit = async (values: MovieFormValues) => {
-    try {
-      const payload = {
-        ...values,
-        releaseDate: format(values.releaseDate, "yyyy-MM-dd"),
-      };
-
-      const response = await axiosInstance.post("/movie/add", payload);
-      if (response.status === 201) {
-        alert("Movie added successfully!");
-        form.reset();
-      }
-    } catch (error) {
-      console.error("Error adding movie:", error);
-      alert("Failed to add movie. Please try again.");
-    }
+    movieMutation.mutate(values);
   };
 
   const getYouTubeThumbnail = (url: string) => {
@@ -323,8 +313,12 @@ const MovieForm = () => {
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full">
-              Add Movie
+            <Button
+              type="submit"
+              disabled={movieMutation.isPending}
+              className="w-full"
+            >
+              {movieMutation.isPending ? "Adding Movie ..." : "Add Movie"}
             </Button>
           </form>
         </Form>

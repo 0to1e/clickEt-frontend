@@ -1,9 +1,11 @@
 // src/api/authApi.ts
+import { ImageUploadRequest } from "@/interfaces/auth/IProfileImage";
 import {
   loginUser,
   registerUser,
   resetPassword,
   sendResetEmail,
+  uploadImage,
 } from "@/service/authService";
 
 import { useMutation } from "@tanstack/react-query";
@@ -70,6 +72,25 @@ export const usePasswordReset = () => {
       toast.error(error.response?.data?.message || "Password Reset failed", {
         className: "bg-error text-white border-error",
       });
+    },
+  });
+};
+
+export const useImageUpload = () => {
+  return useMutation({
+    mutationFn: (request: ImageUploadRequest) => uploadImage(request),
+    onSuccess: () => {
+      toast.success("Image uploaded successfully", {
+        className: "text-white border-success",
+      });
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    },
+    onError: (error: any) => {
+      console.error("Upload error:", error);
+      toast.error(error.response?.data?.message || "Upload failed");
     },
   });
 };
