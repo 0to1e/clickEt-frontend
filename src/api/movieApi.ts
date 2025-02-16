@@ -1,12 +1,18 @@
-import { addMovie, fetchMovieBySlug, fetchAllMoviesbyStatus } from "@/service/movieService";
+import { addMovie, fetchMovieBySlug, fetchAllMoviesbyStatus, fetchAllMovies } from "@/service/movieService";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Movie } from "@/interfaces/movie/IMovie";
 
-export const useFetchAllMovies = (variant: string) => {
+export const useFetchAllMoviesByStatus = (variant: string) => {
   return useQuery<Movie[], Error>({
     queryKey: ["movies", variant], // Unique key for the query
     queryFn: () => fetchAllMoviesbyStatus(variant), // Use the service function
+  });
+};
+export const useFetchAllMovies = () => {
+  return useQuery<Movie[], Error>({
+    queryKey: ["movies"], // Unique key for the query
+    queryFn: () => fetchAllMovies(), // Use the service function
   });
 };
 export const useFetchMovieBySlug = (slug: string) => {

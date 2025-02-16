@@ -1,11 +1,11 @@
 // src/api/authApi.ts
-import { ImageUploadRequest } from "@/interfaces/auth/IProfileImage";
+import { ImageUploadRequest } from "@/interfaces/auth/IImage";
 import {
   loginUser,
   registerUser,
   resetPassword,
   sendResetEmail,
-  uploadImage,
+  uploadProfileImage,
 } from "@/service/authService";
 
 import { useMutation } from "@tanstack/react-query";
@@ -76,9 +76,9 @@ export const usePasswordReset = () => {
   });
 };
 
-export const useImageUpload = () => {
+export const useProfileImageUpload = () => {
   return useMutation({
-    mutationFn: (request: ImageUploadRequest) => uploadImage(request),
+    mutationFn: (request: ImageUploadRequest) => uploadProfileImage(request),
     onSuccess: () => {
       toast.success("Image uploaded successfully", {
         className: "text-white border-success",

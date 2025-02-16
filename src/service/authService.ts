@@ -8,7 +8,7 @@ import {
 import {
   ImageUploadRequest,
   ImageUploadResponse,
-} from "@/interfaces/auth/IProfileImage";
+} from "@/interfaces/auth/IImage";
 
 export async function loginUser(credentials: LoginCredentials) {
   const { data } = await axiosInstance.post("/auth/login", credentials);
@@ -35,7 +35,7 @@ export async function resetPassword(credentials: ResetCredentials) {
   return data;
 }
 
-export const uploadImage = async ({
+export const uploadProfileImage = async ({
   image,
   currentImageUrl,
 }: ImageUploadRequest): Promise<ImageUploadResponse> => {
@@ -47,7 +47,7 @@ export const uploadImage = async ({
   }
 
   const response = await axiosInstance.post<ImageUploadResponse>(
-    "/auth/user/updateimage",
+    "/auth//user/upload",
     formData,
     {
       headers: { "Content-Type": "multipart/form-data" },

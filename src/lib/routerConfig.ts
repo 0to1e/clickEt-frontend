@@ -61,7 +61,7 @@ export const routeConfig: IRouterConfig = {
     path: "/uprofile",
     layout: ELayouts.NA,
     isProtected: true,
-    componentLocation: "components/common/ImageUploads",
+    componentLocation: "pages/utilPages/ProfileUpload",
   },
   AddMovies: {
     path: "/movie/add",

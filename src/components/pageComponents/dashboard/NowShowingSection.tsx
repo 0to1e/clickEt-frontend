@@ -1,10 +1,10 @@
 import { MovieSectionProps } from "@/interfaces/movie/IMovie";
-import { useFetchAllMovies } from "@/api/movieApi";
+import { useFetchAllMoviesByStatus } from "@/api/movieApi";
 import MoviesGrid from "@/components/common/MoviesGrid";
 
 const MovieSection = ({ variant }: MovieSectionProps) => {
   // Use the custom hook to fetch movies
-  const { data: movies = [], isLoading, isError } = useFetchAllMovies(variant);
+  const { data: movies = [], isLoading, isError } = useFetchAllMoviesByStatus(variant);
 
   if (isLoading) {
     return <div>Loading...</div>;

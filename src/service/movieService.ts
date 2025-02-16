@@ -5,11 +5,33 @@ import { format } from "date-fns";
 import { decodeHTMLEntities } from "@/utils/htmlDecoder";
 import { Movie } from "@/interfaces/movie/IMovie";
 
-export const fetchAllMoviesbyStatus = async (variant: string): Promise<Movie[]> => {
+export const fetchAllMoviesbyStatus = async (
+  variant: string
+): Promise<Movie[]> => {
   const url = `/movie/status/${variant}`;
   const response = await axiosInstance.get(url);
 
   // If the response data is undefined or null, return an empty array
+  if (!response.data?.movies) {
+    return [];
+  }
+
+  // Decode HTML entities in the URLs
+  const decodedMovies = response.data.movies.map((movie: Movie) => ({
+    ...movie,
+    posterURL: {
+      sm: decodeHTMLEntities(movie.posterURL.sm),
+      lg: decodeHTMLEntities(movie.posterURL.lg),
+    },
+    trailerURL: decodeHTMLEntities(movie.trailerURL),
+  }));
+
+  return decodedMovies;
+};
+export const fetchAllMovies = async (): Promise<Movie[]> => {
+  const url = "/movie/getAll";
+  const response = await axiosInstance.get(url);
+
   if (!response.data?.movies) {
     return [];
   }

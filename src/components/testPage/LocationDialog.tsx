@@ -1,7 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/shadcn/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/shadcn/form";
 import {
   Select,
   SelectContent,
@@ -11,6 +16,7 @@ import {
 } from "@/components/shadcn/select";
 import {
   Dialog,
+  DialogDescription,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -23,14 +29,7 @@ import { Plus, X } from "lucide-react";
 import {
   LocationFormData,
   LocationFormSchema,
-  LocationItem,
 } from "@/lib/formSchemas/distributorFormSchema/locationSchemas";
-
-let locationCounter = 1;
-const generateLocationId = () => {
-  locationCounter++;
-  return `loc-${locationCounter}`;
-};
 
 interface LocationDialogProps {
   onSave: (data: LocationFormData) => void;
@@ -40,52 +39,104 @@ interface LocationDialogProps {
   children?: React.ReactNode;
 }
 
-export function LocationDialog({
+const LocationDialog = ({
   onSave,
   initialData,
   triggerText = initialData ? "Edit Locations" : "Add Locations",
   dialogTitle = initialData ? "Edit Locations" : "Add Locations",
   children,
-}: LocationDialogProps) {
+}: LocationDialogProps) => {
+  const idCounter = useRef(0);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const generateLocationId = useCallback(() => {
+    return `loc-${Date.now()}-${idCounter.current++}`;
+  }, []);
+
   const defaultValues = useMemo((): LocationFormData => {
-    return (
-      initialData || {
-        locations: [
-          {
-            id: "loc-1",
-            type: "HQ",
-            location: "",
-            coordinates: { latitude: "", longitude: "" },
-          },
-        ],
-        contacts: {
-          phoneNumbers: [],
-          emails: [],
-        },
-      }
-    );
+    if (initialData) {
+      return {
+        ...initialData,
+        locations: initialData.locations.map((loc) => ({
+          ...loc,
+          type: loc.type === "HQ" ? "HQ" : "Branch",
+        })),
+      };
+    }
+    return {
+      locations: [],
+      contacts: { phoneNumbers: [], emails: [] },
+    };
   }, [initialData]);
 
   const form = useForm<LocationFormData>({
     resolver: zodResolver(LocationFormSchema),
     defaultValues,
+    mode: "onChange", // validate as the user types/changes fields
   });
 
   const { handleSubmit, reset, setValue, watch } = form;
-  const locations = watch("locations") as LocationItem[];
+  const locations = watch("locations") as LocationFormData["locations"];
   const phoneNumbers = watch("contacts.phoneNumbers");
   const emails = watch("contacts.emails");
 
-  const [isOpen, setIsOpen] = useState(false);
-
+  // Initialize form with one location and its contacts for new entries.
   useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+    if (isOpen && !initialData) {
+      const newLocationId = generateLocationId();
+      reset({
+        locations: [
+          {
+            id: newLocationId,
+            type: "Branch",
+            location: "",
+            coordinates: { latitude: "", longitude: "" },
+          },
+        ],
+        contacts: {
+          phoneNumbers: [
+            {
+              type: "inquiry",
+              locationId: newLocationId,
+              number: "",
+            },
+          ],
+          emails: [
+            {
+              type: "inquiry",
+              locationId: newLocationId,
+              email: "",
+            },
+          ],
+        },
+      });
+    }
+  }, [isOpen, initialData, reset, generateLocationId]);
 
+  const handleTypeChange = (index: number, newType: "HQ" | "Branch") => {
+    const updatedLocations = locations.map((loc, i) => {
+      if (i === index) {
+        return {
+          ...loc,
+          type: newType,
+        };
+      }
+      if (newType === "HQ" && loc.type === "HQ") {
+        return {
+          ...loc,
+          type: "Branch" as "Branch" | "HQ",
+        };
+      }
+      return loc;
+    });
+    setValue("locations", updatedLocations);
+  };
+
+  const hasHQ = locations.some((loc) => loc.type === "HQ");
   const onSubmit = (data: LocationFormData) => {
-    onSave({ ...data, locations });
+    onSave(data);
     setIsOpen(false);
-    reset(defaultValues);
+    reset();
   };
 
   return (
@@ -102,8 +153,11 @@ export function LocationDialog({
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
+        <DialogDescription>
+          Please fill out the details for the location.
+        </DialogDescription>
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4">
             {/* Addresses Section */}
             <div className="space-y-4">
               <h4 className="font-medium">Addresses</h4>
@@ -115,85 +169,115 @@ export function LocationDialog({
                   <Button
                     variant="destructive"
                     className="absolute top-3 right-3"
-                    onClick={() =>
+                    onClick={() => {
+                      const updatedLocations = locations.filter(
+                        (_, i) => i !== index
+                      );
+                      setValue("locations", updatedLocations);
+                      // Update contacts when location is removed
                       setValue(
-                        "locations",
-                        locations.filter((_, i) => i !== index)
-                      )
-                    }
+                        "contacts.phoneNumbers",
+                        phoneNumbers.filter((p) => p.locationId !== loc.id)
+                      );
+                      setValue(
+                        "contacts.emails",
+                        emails.filter((e) => e.locationId !== loc.id)
+                      );
+                    }}
                   >
                     <X />
                   </Button>
                   <div className="space-y-4">
-                    <div className="flex gap-3">
-                      <Select
-                        value={loc.type}
-                        onValueChange={(value) => {
-                          const updated = [...locations];
-                          updated[index].type = value as "HQ" | "Branch";
-                          setValue("locations", updated);
-                        }}
-                      >
-                        <SelectTrigger className="w-[35%]">
-                          <SelectValue placeholder="Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem
-                            value="HQ"
-                            disabled={locations.some((l) => l.type === "HQ")}
-                          >
-                            HQ
-                          </SelectItem>
-                          <SelectItem value="Branch">Branch</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        value={loc.location}
-                        onChange={(e) => {
-                          const updated = [...locations];
-                          updated[index].location = e.target.value;
-                          setValue("locations", updated);
-                        }}
-                        placeholder="Address"
+                    <div className="flex justify-between gap-3">
+                      <FormField
+                        control={form.control}
+                        name={`locations.${index}.type`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <Select
+                              value={field.value}
+                              onValueChange={(value) => {
+                                handleTypeChange(
+                                  index,
+                                  value as "HQ" | "Branch"
+                                );
+                                field.onChange(value);
+                              }}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem
+                                  value="HQ"
+                                  disabled={hasHQ && loc.type !== "HQ"}
+                                >
+                                  HQ
+                                </SelectItem>
+                                <SelectItem value="Branch">Branch</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage>
+                              {fieldState.error?.message}
+                            </FormMessage>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`locations.${index}.location`}
+                        render={({ field, fieldState }) => (
+                          <FormItem className="w-full">
+                            <Input {...field} placeholder="Address" />
+                            <FormMessage>
+                              {fieldState.error?.message}
+                            </FormMessage>
+                          </FormItem>
+                        )}
                       />
                     </div>
                     <h5 className="font-medium">Co-ordinates:</h5>
                     <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        value={loc.coordinates.latitude}
-                        onChange={(e) => {
-                          const updated = [...locations];
-                          updated[index].coordinates.latitude = e.target.value;
-                          setValue("locations", updated);
-                        }}
-                        placeholder="Latitude"
+                      <FormField
+                        control={form.control}
+                        name={`locations.${index}.coordinates.latitude`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <Input {...field} placeholder="Latitude" />
+                            <FormMessage>
+                              {fieldState.error?.message}
+                            </FormMessage>
+                          </FormItem>
+                        )}
                       />
-                      <Input
-                        value={loc.coordinates.longitude}
-                        onChange={(e) => {
-                          const updated = [...locations];
-                          updated[index].coordinates.longitude = e.target.value;
-                          setValue("locations", updated);
-                        }}
-                        placeholder="Longitude"
+                      <FormField
+                        control={form.control}
+                        name={`locations.${index}.coordinates.longitude`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <Input {...field} placeholder="Longitude" />
+                            <FormMessage>
+                              {fieldState.error?.message}
+                            </FormMessage>
+                          </FormItem>
+                        )}
                       />
                     </div>
                   </div>
                 </div>
               ))}
               <Button
+                type="button"
                 variant="outline"
-                onClick={() =>
-                  setValue("locations", [
-                    ...locations,
-                    {
-                      id: generateLocationId(),
-                      type: "Branch",
-                      location: "",
-                      coordinates: { latitude: "", longitude: "" },
-                    },
-                  ])
-                }
+                onClick={() => {
+                  const newLocation = {
+                    id: generateLocationId(),
+                    type: "Branch" as "Branch" | "HQ",
+                    location: "",
+                    coordinates: { latitude: "", longitude: "" },
+                  };
+                  setValue("locations", [...locations, newLocation]);
+                }}
               >
                 <Plus /> Add Address
               </Button>
@@ -207,65 +291,93 @@ export function LocationDialog({
                   <h5 className="font-medium">Phone Numbers</h5>
                   <button
                     type="button"
-                    className="p-1 bg-primary rounded-sm"
-                    onClick={() =>
+                    onClick={() => {
+                      const defaultLocationId = locations[0]?.id || "";
                       setValue("contacts.phoneNumbers", [
                         ...phoneNumbers,
-                        { type: "inquiry", locationId: "", number: "" },
-                      ])
-                    }
+                        {
+                          type: "inquiry",
+                          locationId: defaultLocationId,
+                          number: "",
+                        },
+                      ]);
+                    }}
                   >
-                    <Plus size={15} color="white" className="bg-primary" />
+                    <Plus size={15} />
                   </button>
                 </div>
                 {phoneNumbers.map((phone, index) => (
                   <div key={index} className="flex gap-2">
-                    <Select
-                      value={phone.type}
-                      onValueChange={(value) => {
-                        const updated = [...phoneNumbers];
-                        updated[index].type = value as "inquiry" | "support";
-                        setValue("contacts.phoneNumbers", updated);
-                      }}
-                    >
-                      <SelectTrigger className="w-[45%]">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="inquiry">Inquiry</SelectItem>
-                        <SelectItem value="support">Support</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={phone.locationId}
-                      onValueChange={(value) => {
-                        const updated = [...phoneNumbers];
-                        updated[index].locationId = value;
-                        setValue("contacts.phoneNumbers", updated);
-                      }}
-                    >
-                      <SelectTrigger className="w-[35%]">
-                        <SelectValue placeholder="Select Address" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations.map((loc) => (
-                          <SelectItem key={loc.id} value={loc.id}>
-                            {loc.location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      value={phone.number}
-                      onChange={(e) => {
-                        const updated = [...phoneNumbers];
-                        updated[index].number = e.target.value;
-                        setValue("contacts.phoneNumbers", updated);
-                      }}
-                      placeholder="Phone Number"
+                    <FormField
+                      control={form.control}
+                      name={`contacts.phoneNumbers.${index}.type`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <Select
+                            value={field.value}
+                            onValueChange={(value) => {
+                              const updated = [...phoneNumbers];
+                              updated[index].type = value as
+                                | "inquiry"
+                                | "support";
+                              field.onChange(value);
+                              setValue("contacts.phoneNumbers", updated);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="inquiry">Inquiry</SelectItem>
+                              <SelectItem value="support">Support</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`contacts.phoneNumbers.${index}.locationId`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <Select
+                            value={field.value}
+                            onValueChange={(value) => {
+                              const updated = [...phoneNumbers];
+                              updated[index].locationId = value;
+                              field.onChange(value);
+                              setValue("contacts.phoneNumbers", updated);
+                            }}
+                          >
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Address" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {locations.map((loc) => (
+                                <SelectItem key={loc.id} value={loc.id}>
+                                  {loc.location || "Add a location above"}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`contacts.phoneNumbers.${index}.number`}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="flex-1">
+                          <Input {...field} placeholder="Phone Number" />
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
                     />
                     <Button
                       variant="destructive"
+                      size="sm"
                       onClick={() =>
                         setValue(
                           "contacts.phoneNumbers",
@@ -273,21 +385,21 @@ export function LocationDialog({
                         )
                       }
                     >
-                      X
+                      <X size={15} />
                     </Button>
                   </div>
                 ))}
               </div>
 
               <div className="space-y-5">
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                   <h5 className="font-medium">Emails</h5>
-                  <button
+                  <Button
                     type="button"
-                    className="p-1 bg-primary rounded-sm"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
-                      const defaultLocationId =
-                        locations.length > 0 ? locations[0].id : "";
+                      const defaultLocationId = locations[0]?.id || "";
                       setValue("contacts.emails", [
                         ...emails,
                         {
@@ -298,57 +410,81 @@ export function LocationDialog({
                       ]);
                     }}
                   >
-                    <Plus size={15} color="white" className="bg-primary" />
-                  </button>
+                    <Plus size={15} />
+                  </Button>
                 </div>
                 {emails.map((email, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Select
-                      value={email.type}
-                      onValueChange={(value) => {
-                        const updated = [...emails];
-                        updated[index].type = value as "inquiry" | "support";
-                        setValue("contacts.emails", updated);
-                      }}
-                    >
-                      <SelectTrigger className="w-[45%]">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="inquiry">Inquiry</SelectItem>
-                        <SelectItem value="support">Support</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={email.locationId}
-                      onValueChange={(value) => {
-                        const updated = [...emails];
-                        updated[index].locationId = value;
-                        setValue("contacts.emails", updated);
-                      }}
-                    >
-                      <SelectTrigger className="w-[35%]">
-                        <SelectValue placeholder="Select Address" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations.map((loc) => (
-                          <SelectItem key={loc.id} value={loc.id}>
-                            {loc.location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      value={email.email}
-                      onChange={(e) => {
-                        const updated = [...emails];
-                        updated[index].email = e.target.value;
-                        setValue("contacts.emails", updated);
-                      }}
-                      placeholder="Email Address"
+                  <div key={index} className="flex gap-2 items-center">
+                    <FormField
+                      control={form.control}
+                      name={`contacts.emails.${index}.type`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <Select
+                            value={field.value}
+                            onValueChange={(value) => {
+                              const updated = [...emails];
+                              updated[index].type = value as
+                                | "inquiry"
+                                | "support";
+                              field.onChange(value);
+                              setValue("contacts.emails", updated);
+                            }}
+                          >
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="inquiry">Inquiry</SelectItem>
+                              <SelectItem value="support">Support</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`contacts.emails.${index}.locationId`}
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <Select
+                            value={field.value}
+                            onValueChange={(value) => {
+                              const updated = [...emails];
+                              updated[index].locationId = value;
+                              field.onChange(value);
+                              setValue("contacts.emails", updated);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Address" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {locations.map((loc) => (
+                                <SelectItem key={loc.id} value={loc.id}>
+                                  {loc.location || "Add a location above"}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`contacts.emails.${index}.email`}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="flex-1">
+                          <Input {...field} placeholder="Email Address" />
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
                     />
                     <Button
                       variant="destructive"
+                      size="sm"
                       onClick={() =>
                         setValue(
                           "contacts.emails",
@@ -356,7 +492,7 @@ export function LocationDialog({
                         )
                       }
                     >
-                      X
+                      <X size={15} />
                     </Button>
                   </div>
                 ))}
@@ -364,7 +500,7 @@ export function LocationDialog({
             </div>
 
             <DialogFooter>
-              <Button type="submit" className="w-full">
+              <Button type="button" onClick={handleSubmit(onSubmit)} className="w-full">
                 Save Location
               </Button>
             </DialogFooter>
@@ -373,4 +509,6 @@ export function LocationDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default LocationDialog;
