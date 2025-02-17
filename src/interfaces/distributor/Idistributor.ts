@@ -1,36 +1,3 @@
-//   export interface AddDistributorRequest {
-//   name: string;
-//   logo_URL?: string;
-//   commissionRate: number;
-//   isActive: boolean;
-//   locations: Array<{
-//     type: "HQ" | "Branch";
-//     location: string;
-//     coordinates: {
-//       latitude: number;
-//       longitude: number;
-//     };
-//   }>;
-//   contacts: Array<{
-//     location: string;
-//     phoneNumbers: Array<{
-//       type: string;
-//       number: string;
-//     }>;
-//     emails: Array<{
-//       type: string;
-//       email: string;
-//     }>;
-//   }>;
-//   distributionRights?: Array<{
-//     movieId: string;
-//     commissionRate: number;
-//     territories: string[];
-//     validFrom: string;
-//     validUntil: string;
-//   }>;
-// }
-
 import { ImageUploadRequest } from "../auth/IImage";
 
 // Coordinates used in a location
@@ -118,39 +85,15 @@ export interface DistributorResponse extends DistributorBase {
   __v: number;
 }
 
-/**
- * Response for adding a distributor.
- */
+
 export interface AddDistributorResponse {
-  message: string;
   Distributor: DistributorResponse;
+  message: string;
 }
 
-/**
- * Response for getting all distributors.
- */
-export interface GetAllDistributorsResponse {
-  distributors: DistributorResponse[];
-}
-
-/**
- * Response for getting a specific distributor.
- * (Note: in your sample, the distributor is returned inside an array.)
- */
 export interface GetDistributorResponse {
   distributor: DistributorResponse[];
 }
-
-/**
- * (Optional) A generic API response wrapper that can be reused if you decide
- * to wrap your data under a common key such as "data".
- *
- * export interface ApiResponse<T> {
- *   message?: string;
- *   data: T;
- * }
- */
-
 
 export interface DistributorLogoRequest extends ImageUploadRequest{
   distributorId:string;

@@ -80,7 +80,7 @@ export const useProfileImageUpload = () => {
   return useMutation({
     mutationFn: (request: ImageUploadRequest) => uploadProfileImage(request),
     onSuccess: () => {
-      toast.success("Image uploaded successfully", {
+      toast.success("Profile Picture uploaded successfully", {
         className: "text-white border-success",
       });
 

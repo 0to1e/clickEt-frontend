@@ -117,7 +117,7 @@ const DistributionRightsDialog = ({
           Please fill out the details for the distribution rights.
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)}  className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -232,7 +232,7 @@ const DistributionRightsDialog = ({
             </div>
             <DialogFooter>
               <Button
-                type="submit"
+                type="submit" 
                 className="w-full"
                 disabled={availableLocations.length === 0}
               >

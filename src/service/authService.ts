@@ -46,7 +46,7 @@ export const uploadProfileImage = async ({
     formData.append("currentImageUrl", currentImageUrl);
   }
 
-  const response = await axiosInstance.post<ImageUploadResponse>(
+  const response = await axiosInstance.patch<ImageUploadResponse>(
     "/auth//user/upload",
     formData,
     {

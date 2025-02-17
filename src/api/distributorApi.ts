@@ -1,7 +1,7 @@
-import { addDistributor, uploadDistributorLogo } from "@/service/distributorService";
+import { addDistributor, deleteDistributor, fetchAllDistributors, uploadDistributorLogo } from "@/service/distributorService";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { DistributorLogoRequest } from "@/interfaces/distributor/Idistributor";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DistributorLogoRequest, DistributorResponse } from "@/interfaces/distributor/Idistributor";
 
 export const useAddDistributor = () => {
   return useMutation({
@@ -19,12 +19,37 @@ export const useAddDistributor = () => {
   });
 };
 
+export const useFetchAllDistributors = () => {
+  return useQuery<DistributorResponse[], Error>({
+    queryKey: ["movies"],
+    queryFn: () => fetchAllDistributors(), 
+  });
+};
 
+export const useDeleteDistributor = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (id: string) => deleteDistributor(id),
+    onSuccess: () => {
+      toast.success("Distributor deleted successfully", {
+        className: "text-white border-success",
+      });
+      // Invalidate and refetch the distributors list
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to delete distributor", {
+        className: "bg-error text-white border-error",
+      });
+    },
+  });
+};
 export const useDistributorLogoUpload = () => {
   return useMutation({
     mutationFn: (request: DistributorLogoRequest) => uploadDistributorLogo(request),
     onSuccess: () => {
-      toast.success("Image uploaded successfully", {
+      toast.success("Distributor Logo uploaded successfully", {
         className: "text-white border-success",
       });
       setTimeout(() => {

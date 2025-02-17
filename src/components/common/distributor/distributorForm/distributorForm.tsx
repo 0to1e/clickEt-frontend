@@ -15,7 +15,7 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { X } from "lucide-react";
 
-import LocationDialog from "@/components/testPage/LocationDialog";
+import LocationDialog from "@/components/common/distributor/distributorForm/LocationDialog";
 import DistributionRightsDialog from "./distributorRightsDialog";
 
 import { LocationFormData } from "@/lib/formSchemas/distributorFormSchema/locationSchemas";
@@ -29,7 +29,7 @@ import {
   useAddDistributor,
   useDistributorLogoUpload,
 } from "@/api/distributorApi";
-import ImageUploader from "../common/ImageUploader";
+import ImageUploader from "../../ImageUploader";
 
 const DistributorForm = () => {
   const [distributorData, setDistributorData] = useState<{

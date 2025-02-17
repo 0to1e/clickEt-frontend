@@ -14,7 +14,7 @@ export const LocationItemSchema = z.object({
 });
 
 export const ContactPhoneSchema = z.object({
-  type: z.enum(["inquiry", "support"]),
+  type: z.enum(["INQUIRY", "SUPPORT"]),
   number: z
     .string()
     .regex(/^(?:\+977[- ]?)?\d{10}$/, "Invalid Nepali phone number format"),
@@ -22,7 +22,7 @@ export const ContactPhoneSchema = z.object({
 });
 
 export const ContactEmailSchema = z.object({
-  type: z.enum(["inquiry", "support"]),
+  type: z.enum(["INQUIRY", "SUPPORT"]),
   email: z
     .string()
     .email("Invalid email address")

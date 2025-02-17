@@ -96,14 +96,14 @@ const LocationDialog = ({
         contacts: {
           phoneNumbers: [
             {
-              type: "inquiry",
+              type: "INQUIRY",
               locationId: newLocationId,
               number: "",
             },
           ],
           emails: [
             {
-              type: "inquiry",
+              type: "INQUIRY",
               locationId: newLocationId,
               email: "",
             },
@@ -296,7 +296,7 @@ const LocationDialog = ({
                       setValue("contacts.phoneNumbers", [
                         ...phoneNumbers,
                         {
-                          type: "inquiry",
+                          type: "INQUIRY",
                           locationId: defaultLocationId,
                           number: "",
                         },
@@ -318,8 +318,8 @@ const LocationDialog = ({
                             onValueChange={(value) => {
                               const updated = [...phoneNumbers];
                               updated[index].type = value as
-                                | "inquiry"
-                                | "support";
+                                | "INQUIRY"
+                                | "SUPPORT";
                               field.onChange(value);
                               setValue("contacts.phoneNumbers", updated);
                             }}
@@ -328,8 +328,8 @@ const LocationDialog = ({
                               <SelectValue placeholder="Type" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="inquiry">Inquiry</SelectItem>
-                              <SelectItem value="support">Support</SelectItem>
+                              <SelectItem value="INQUIRY">Inquiry</SelectItem>
+                              <SelectItem value="SUPPORT">Support</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage>{fieldState.error?.message}</FormMessage>
@@ -403,7 +403,7 @@ const LocationDialog = ({
                       setValue("contacts.emails", [
                         ...emails,
                         {
-                          type: "inquiry",
+                          type: "INQUIRY",
                           locationId: defaultLocationId,
                           email: "",
                         },
@@ -425,8 +425,8 @@ const LocationDialog = ({
                             onValueChange={(value) => {
                               const updated = [...emails];
                               updated[index].type = value as
-                                | "inquiry"
-                                | "support";
+                                | "INQUIRY"
+                                | "SUPPORT";
                               field.onChange(value);
                               setValue("contacts.emails", updated);
                             }}
