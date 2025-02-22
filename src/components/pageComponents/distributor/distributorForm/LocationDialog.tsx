@@ -435,8 +435,8 @@ const LocationDialog = ({
                               <SelectValue placeholder="Type" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="inquiry">Inquiry</SelectItem>
-                              <SelectItem value="support">Support</SelectItem>
+                              <SelectItem value="INQUIRY">Inquiry</SelectItem>
+                              <SelectItem value="SUPPORT">Support</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage>{fieldState.error?.message}</FormMessage>

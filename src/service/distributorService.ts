@@ -3,7 +3,7 @@ import {
   DistributorBase,
   DistributorLogoRequest,
   DistributorResponse,
-} from "@/interfaces/distributor/Idistributor";
+} from "@/interfaces/Idistributor";
 import { axiosInstance } from "@/utils/axiosInstance";
 
 export async function addDistributor(credentials: DistributorBase) {
@@ -17,6 +17,16 @@ export const fetchAllDistributors = async (): Promise<
   const url = "/distributor/getAll";
   const response = await axiosInstance.get(url);
 
+  if (!response.data?.distributors) {
+    return [];
+  }
+  return response.data.distributors;
+};
+export const fetchDistributorsByMovie = async (
+  movieId: string
+): Promise<DistributorResponse[]> => {
+  const url = `/distributor/getByMovie/${movieId}`;
+  const response = await axiosInstance.get(url);
   if (!response.data?.distributors) {
     return [];
   }

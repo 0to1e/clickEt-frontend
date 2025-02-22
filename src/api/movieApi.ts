@@ -1,7 +1,7 @@
 import { addMovie, fetchMovieBySlug, fetchAllMoviesbyStatus, fetchAllMovies } from "@/service/movieService";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Movie } from "@/interfaces/movie/IMovie";
+import { Movie } from "@/interfaces/IMovie";
 
 export const useFetchAllMoviesByStatus = (variant: string) => {
   return useQuery<Movie[], Error>({

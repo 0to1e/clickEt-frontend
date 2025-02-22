@@ -1,4 +1,4 @@
-import { ImageUploadRequest } from "../auth/IImage";
+import { ImageUploadRequest } from "./auth/IImage";
 
 // Coordinates used in a location
 export interface Coordinates {

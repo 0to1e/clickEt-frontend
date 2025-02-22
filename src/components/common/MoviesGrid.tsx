@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Movie } from "@/interfaces/movie/IMovie";
+import { Movie } from "@/interfaces/IMovie";
 import DominantColorExtractorCard from "../custom/ExpandingMovieCard";
 import { Link } from "react-router-dom";
 

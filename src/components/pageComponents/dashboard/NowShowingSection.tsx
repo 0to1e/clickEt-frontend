@@ -1,4 +1,4 @@
-import { MovieSectionProps } from "@/interfaces/movie/IMovie";
+import { MovieSectionProps } from "@/interfaces/IMovie";
 import { useFetchAllMoviesByStatus } from "@/api/movieApi";
 import MoviesGrid from "@/components/common/MoviesGrid";
 

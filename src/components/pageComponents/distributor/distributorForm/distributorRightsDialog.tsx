@@ -69,25 +69,31 @@ const DistributionRightsDialog = ({
     resolver: zodResolver(DistributionRightFormSchema),
     defaultValues,
   });
-  const { handleSubmit, reset } = form;
+  const { reset } = form;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTerritories, setSelectedTerritories] = useState<string[]>(
     defaultValues.territories
   );
 
-  // When editing, update selected territories if initialData changes.
   useEffect(() => {
     if (initialData) {
       setSelectedTerritories(initialData.territories);
     }
   }, [initialData]);
 
-  const onSubmit = (data: DistributionRightFormData) => {
+  const onDistributorSubmit = (data: DistributionRightFormData) => {
     onSave({ ...data, territories: selectedTerritories });
     setIsOpen(false);
     reset(defaultValues);
     setSelectedTerritories(defaultValues.territories);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const data = form.getValues();
+    onDistributorSubmit(data);
   };
 
   const availableLocations = addresses.filter(
@@ -117,7 +123,7 @@ const DistributionRightsDialog = ({
           Please fill out the details for the distribution rights.
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}  className="space-y-6">
+          <form onSubmit={handleFormSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -232,7 +238,7 @@ const DistributionRightsDialog = ({
             </div>
             <DialogFooter>
               <Button
-                type="submit" 
+                type="submit"
                 className="w-full"
                 disabled={availableLocations.length === 0}
               >

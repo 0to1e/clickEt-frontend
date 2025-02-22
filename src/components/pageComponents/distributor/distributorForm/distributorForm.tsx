@@ -15,7 +15,7 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Button } from "@/components/shadcn/button";
 import { X } from "lucide-react";
 
-import LocationDialog from "@/components/common/distributor/distributorForm/LocationDialog";
+import LocationDialog from "@/components/pageComponents/distributor/distributorForm/LocationDialog";
 import DistributionRightsDialog from "./distributorRightsDialog";
 
 import { LocationFormData } from "@/lib/formSchemas/distributorFormSchema/locationSchemas";
@@ -29,7 +29,7 @@ import {
   useAddDistributor,
   useDistributorLogoUpload,
 } from "@/api/distributorApi";
-import ImageUploader from "../../ImageUploader";
+import ImageUploader from "../../../common/ImageUploader";
 
 const DistributorForm = () => {
   const [distributorData, setDistributorData] = useState<{
@@ -301,7 +301,7 @@ const DistributorForm = () => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {distributionRights.map((right, index) => (
-                    <div className=" relative">
+                    <div key={index} className=" relative">
                       <DistributionRightsDialog
                         key={index}
                         onSave={(updatedRight: DistributionRightFormData) => {
