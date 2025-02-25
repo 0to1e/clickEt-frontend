@@ -18,9 +18,9 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Button } from "@/components/shadcn/button";
-import { Edit, Trash2, MapPin, Phone, Mail } from "lucide-react";
+import { Edit, Trash2, MapPin, Phone, Mail, Plus } from "lucide-react";
 
-import AlertDialog from "../../common/AlertDialog";
+import AlertDialog from "@/components/common/AlertDialog";
 
 import {
   useDeleteDistributor,
@@ -29,7 +29,16 @@ import {
 
 type FilterStatus = "all" | "active" | "inactive";
 
-export default function DistributorsTable() {
+interface DistributorsTableProps {
+  formState: boolean;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const DistributorsTable: React.FC<DistributorsTableProps> = ({
+  formState,
+  setShowForm,
+
+}) => {
   const [filter, setFilter] = useState<FilterStatus>("active");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedDistributorId, setSelectedDistributorId] = useState<
@@ -78,10 +87,16 @@ export default function DistributorsTable() {
   }
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto p-4">
+    <div className="space-y-4 min-w-[70vw]">
       {/* Header with Filter */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">Distributors</h2>
+        <div className="flex justify-center items-center gap-6">
+          <h2 className="text-2xl font-bold">Distributors</h2>
+          <Button onClick={() => setShowForm(!formState)}>
+            <Plus />
+            <span>Add Distributor</span>
+          </Button>
+        </div>
         <Select
           value={filter}
           onValueChange={(value) => setFilter(value as FilterStatus)}
@@ -219,4 +234,6 @@ export default function DistributorsTable() {
       />
     </div>
   );
-}
+};
+
+export default DistributorsTable;

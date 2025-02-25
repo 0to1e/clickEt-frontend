@@ -77,4 +77,11 @@ export const routeConfig: IRouterConfig = {
     componentLocation: "pages/movie/movieDetailsPage",
   },
   
+  PaymentVerificationPage: {
+    path: "/payment/verify",
+    layout: ELayouts.CLIENT,
+    isProtected: true,
+    componentLocation: "components/testPage/PaymentVerifyPage",
+  },
+  
 };

@@ -1,32 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const images = [
-  "https://picsum.photos/id/337/1920/1080",
-  "https://picsum.photos/id/338/1920/1080",
-  "https://picsum.photos/id/339/1920/1080",
-  "https://picsum.photos/id/340/1920/1080",
-  "https://picsum.photos/id/341/1920/1080",
-];
+import { useFetchAllMovies } from "@/api/movieApi"; 
+import { Movie } from "@/interfaces/IMovie"; 
 
 const AUTO_SCROLL_INTERVAL = 5000; // 5 seconds
-const USER_INACTIVITY_TIMEOUT = 5000; // 10 seconds
+const USER_INACTIVITY_TIMEOUT = 10000; // 10 seconds
 
 export default function HeroCarousel() {
+  const { data: movies, isError } = useFetchAllMovies();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
+  const images = movies?.map((movie: Movie) => movie.posterURL.lg) || [];
+  
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  }, []);
+  }, [images.length]);
 
   const prevSlide = useCallback(() => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + images.length) % images.length
     );
-  }, []);
+  }, [images.length]);
 
   const handleUserInteraction = useCallback(() => {
     setIsAutoScrolling(false);
@@ -37,7 +34,7 @@ export default function HeroCarousel() {
     let autoScrollTimer: NodeJS.Timeout;
     let userInactivityTimer: NodeJS.Timeout;
 
-    if (isAutoScrolling) {
+    if (isAutoScrolling && images.length > 0) {
       autoScrollTimer = setInterval(nextSlide, AUTO_SCROLL_INTERVAL);
     } else {
       userInactivityTimer = setTimeout(() => {
@@ -51,7 +48,17 @@ export default function HeroCarousel() {
       clearInterval(autoScrollTimer);
       clearTimeout(userInactivityTimer);
     };
-  }, [isAutoScrolling, lastInteractionTime, nextSlide]);
+  }, [isAutoScrolling, lastInteractionTime, nextSlide, images.length]);
+
+
+
+  if (isError || images.length === 0) {
+    return (
+      <div className="w-full h-[80vh] flex items-center justify-center text-red-500">
+        Failed to load movies.
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full max-md:h-[80vw] h-[80vh] overflow-hidden">
@@ -67,11 +74,10 @@ export default function HeroCarousel() {
                 : "translate-x-full"
             }`}
           >
-            {" "}
-            <Link to={"/"}>
+            <Link to={`/movie/${movies?.[index].slug}`}>
               <img
                 src={src}
-                alt={`Slide ${index + 1}`}
+                alt={movies?.[index].name}
                 className="w-full h-full object-cover"
               />
             </Link>

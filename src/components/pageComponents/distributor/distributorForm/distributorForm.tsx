@@ -157,7 +157,7 @@ const DistributorForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full mx-auto ">
       {!showImageUpload && (
         <CardContent className="p-8">
           <Form {...form}>
@@ -359,3 +359,4 @@ const DistributorForm = () => {
 };
 
 export default DistributorForm;
+
