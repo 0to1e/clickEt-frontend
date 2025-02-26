@@ -34,7 +34,7 @@ const data = {
   },
   teams: [
     {
-      name: "ClickIt",
+      name: "ClickEt",
       logo: GalleryVerticalEnd,
       plan: "Admin Dashboard",
     },
@@ -58,7 +58,7 @@ const data = {
       items: [
         {
           title: "History",
-          url: "#",
+          url: "/admin/distributors",
         },
         {
           title: "Starred",
@@ -168,7 +168,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        {/* <NavMain items={data.navMain} /> */}
+        <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>

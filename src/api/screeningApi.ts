@@ -4,6 +4,7 @@ import {
   createScreening,
   deleteScreening,
   fetchAllScreenings,
+  fetchScreeningsByMovie, 
 } from "@/service/screeningService";
 import { toast } from "sonner";
 
@@ -23,6 +24,17 @@ export const useCreateScreening = () => {
     },
   });
 };
+
+// New hook to fetch screenings by movie ID
+export const useFetchScreeningsByMovie = (movieId: string) => {
+  return useQuery({
+    queryKey: ["screenings", "byMovie", movieId],
+    queryFn: () => fetchScreeningsByMovie(movieId),
+    // Don't run the query if movieId is empty
+    enabled: !!movieId,
+  });
+};
+
 
 export const useFetchAllScreenings = () => {
   return useQuery({

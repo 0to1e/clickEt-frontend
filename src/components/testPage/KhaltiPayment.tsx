@@ -146,7 +146,7 @@ const KhaltiPayment: React.FC<KhaltiPaymentProps> = ({
         </div>
       </div>
 
-      <div className="flex justify-between">
+      <div className="w-full flex justify-between gap-5">
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>

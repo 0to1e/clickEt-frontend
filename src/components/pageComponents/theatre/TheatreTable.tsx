@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Button } from "@/components/shadcn/button";
-import { Edit, Trash2, Phone, Mail, MapPin } from "lucide-react";
+import { Edit, Trash2, Phone, Mail, MapPin, Plus } from "lucide-react";
 
 import AlertDialog from "../../common/AlertDialog";
 
@@ -26,7 +26,15 @@ import { useDeleteTheatre, useFetchAllTheatres } from "@/api/theatreApi";
 
 type FilterStatus = "all" | "active" | "inactive";
 
-export default function TheatresTable() {
+interface TheatreTableProps {
+  formState: boolean;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const TheatresTable: React.FC<TheatreTableProps> = ({
+  formState,
+  setShowForm,
+}) => {
   const [filter, setFilter] = useState<FilterStatus>("active");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedTheatreId, setSelectedTheatreId] = useState<string | null>(
@@ -73,10 +81,20 @@ export default function TheatresTable() {
   }
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto p-4">
+    <div className="space-y-4 w-full mx-auto p-4">
       {/* Header with Filter */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">Theatres</h2>
+        <div className="flex gap-3">
+          <h2 className="text-2xl font-bold">Theatres</h2>
+          <Button
+            onClick={() => {
+              setShowForm(!formState);
+            }}
+          >
+            <Plus />
+            <span>Add Theatre</span>
+          </Button>
+        </div>
         <Select
           value={filter}
           onValueChange={(value) => setFilter(value as FilterStatus)}
@@ -120,7 +138,10 @@ export default function TheatresTable() {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         {theatre.locations.map((loc, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-sm"
+                          >
                             <MapPin />
                             <span>{loc.address}</span>
                           </div>
@@ -150,10 +171,7 @@ export default function TheatresTable() {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      {/* {theatre.commissionRate}% */}
-                      rohan%
-                    </TableCell>
+                    <TableCell>{/* {theatre.commissionRate}% */}5 %</TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button
                         variant="outline"
@@ -202,4 +220,6 @@ export default function TheatresTable() {
       />
     </div>
   );
-}
+};
+
+export default TheatresTable;

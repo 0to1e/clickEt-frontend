@@ -7,11 +7,13 @@ import {
   sendResetEmail,
   uploadProfileImage,
 } from "@/service/authService";
+import { useAuth } from "@/hooks/useAuth";
 
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useLogin = () => {
+  const { user } = useAuth();
   return useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
@@ -20,7 +22,12 @@ export const useLogin = () => {
       });
 
       setTimeout(() => {
-        window.location.href = "/";
+        if (user?.role === "ADMIN") {
+          window.location.href = "/admin/movies";
+        }
+        else{
+          window.location.href = "/";
+        }
       }, 2000);
     },
     onError: (error: any) => {

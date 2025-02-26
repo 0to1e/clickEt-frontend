@@ -12,12 +12,18 @@ const PaymentVerifyPage: React.FC = () => {
   const [verifying, setVerifying] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [verificationAttempted, setVerificationAttempted] = useState(false);
 
   const verifyPaymentMutation = useVerifyKhaltiPayment();
 
   useEffect(() => {
+    if (verificationAttempted) {
+      return;
+    }
+
     const verifyPayment = async () => {
       try {
+        setVerificationAttempted(true);
         const params = new URLSearchParams(location.search);
         const pidx = params.get("pidx");
         const status = params.get("status");
@@ -33,7 +39,13 @@ const PaymentVerifyPage: React.FC = () => {
           setVerifying(false);
           return;
         }
-        await verifyPaymentMutation.mutateAsync({ pidx });
+
+        const response = await verifyPaymentMutation.mutateAsync({ pidx });
+        
+        // Check if payment was already verified
+        if (response?.status === "already_confirmed") {
+          toast.info("Payment was already confirmed");
+        }
 
         setSuccess(true);
         setVerifying(false);
@@ -46,13 +58,26 @@ const PaymentVerifyPage: React.FC = () => {
           toast.error("Ticket download failed, please check your bookings");
         }
       } catch (err: any) {
+        console.error("Payment verification error:", err);
         setError(err?.message || "Payment verification failed");
         setVerifying(false);
       }
     };
 
     verifyPayment();
-  }, [location, verifyPaymentMutation]);
+  }, [location, verifyPaymentMutation, verificationAttempted]);
+
+  // If verification is still pending after 30 seconds, show an error
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (verifying) {
+        setVerifying(false);
+        setError("Verification timed out. Please check your bookings to confirm payment status.");
+      }
+    }, 30000);
+
+    return () => clearTimeout(timeoutId);
+  }, [verifying]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] p-4">
@@ -84,9 +109,14 @@ const PaymentVerifyPage: React.FC = () => {
             <p className="text-gray-600">
               {error || "There was an error processing your payment."}
             </p>
-            <Button onClick={() => navigate("/")} className="mt-4">
-              Return to Home
-            </Button>
+            <div className="flex flex-col space-y-2 mt-4">
+              <Button onClick={() => navigate("/bookings")}>
+                Check My Bookings
+              </Button>
+              <Button onClick={() => navigate("/")} variant="outline">
+                Return to Home
+              </Button>
+            </div>
           </div>
         )}
       </div>

@@ -8,6 +8,8 @@ export const routeConfig: IRouterConfig = {
     isProtected: false,
     componentLocation: "pages/HomePage",
   },
+
+  //==============================================  auth pages =====================================
   LoginPage: {
     path: "/login",
     layout: ELayouts.NA,
@@ -32,13 +34,40 @@ export const routeConfig: IRouterConfig = {
     isProtected: false,
     componentLocation: "pages/auth/PasswordResetPage",
   },
-  AdminDashboardPage: {
-    path: "/admin/dashboard",
+  //==============================================  admin pages =====================================
+
+  AdminDistributorPage: {
+    path: "/admin/distributors",
     layout: ELayouts.ADMIN,
     isProtected: true,
     roles: [ERoles.ADMIN],
-    componentLocation: "pages/admin/DashboardPage",
+    componentLocation: "pages/admin/AdminDistributorPage",
   },
+  AdminHallPage: {
+    path: "/admin/halls",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminHallPage",
+  },
+  AdmninTheatrePage: {
+    path: "/admin/theatres",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminTheatrePage",
+  },
+  AdmninScreeningPage: {
+    path: "/admin/screenings",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminScreeningPage",
+  },
+
+
+  //==============================================  utility pages =====================================
+
   NotFoundPage: {
     path: "/404",
     layout: ELayouts.NA,
@@ -57,6 +86,10 @@ export const routeConfig: IRouterConfig = {
     isProtected: false,
     componentLocation: "pages/TestPage",
   },
+
+
+  //==============================================  feature pages =====================================
+
   ProfilePicturePage: {
     path: "/uprofile",
     layout: ELayouts.NA,
@@ -78,7 +111,7 @@ export const routeConfig: IRouterConfig = {
   },
   
   PaymentVerificationPage: {
-    path: "/payment/verify",
+    path: "/payment/verify/*",
     layout: ELayouts.CLIENT,
     isProtected: true,
     componentLocation: "components/testPage/PaymentVerifyPage",

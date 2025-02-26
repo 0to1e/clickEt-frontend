@@ -10,6 +10,7 @@ import { Label } from "@/components/shadcn/label";
 import { X, Plus, Edit } from "lucide-react";
 import TheatreLocationDialog from "./TheatreLocationDialog";
 import { useAddTheatre } from "@/api/theatreApi";
+import { useNavigate } from "react-router-dom";
 
 const locationSchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -132,6 +133,7 @@ const TheatreForm = () => {
     index: number;
     location: Location;
   } | null>(null);
+  const navigate = useNavigate();
 
   const handleOpenLocationDialog = (index?: number) => {
     if (index !== undefined) {
@@ -204,7 +206,7 @@ const TheatreForm = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl p-6 space-y-6 bg-background rounded-lg border">
+    <div className="w-full p-6 space-y-6  rounded-lg border">
       {/* Name Field */}
       <div className="space-y-4">
         <Label htmlFor="theatreName">Theater Name</Label>
@@ -264,7 +266,14 @@ const TheatreForm = () => {
 
       <p className="text-sm text-muted-foreground">
         NOTE: To associate halls with this theatre,{" "}
-        <button className="text-red-500 hover:underline">Click here</button>
+        <button
+          onClick={() => {
+            navigate("/admin/halls");
+          }}
+          className="text-red-500 hover:underline"
+        >
+          Click here
+        </button>
       </p>
 
       {/* Location Dialog */}
