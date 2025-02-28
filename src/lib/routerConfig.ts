@@ -97,7 +97,7 @@ export const routeConfig: IRouterConfig = {
     componentLocation: "pages/utilPages/ProfileUpload",
   },
   AddMovies: {
-    path: "/movie/add",
+    path: "/admin/movies/add",
     layout: ELayouts.ADMIN,
     isProtected: true,
     componentLocation: "pages/movie/AddmovieForm",
