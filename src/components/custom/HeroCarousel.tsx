@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useFetchAllMovies } from "@/api/movieApi"; 
-import { Movie } from "@/interfaces/IMovie"; 
+import { useFetchAllMovies } from "@/api/movieApi";
+import { Movie } from "@/interfaces/IMovie";
 
 const AUTO_SCROLL_INTERVAL = 5000; // 5 seconds
 const USER_INACTIVITY_TIMEOUT = 10000; // 10 seconds
@@ -14,7 +14,7 @@ export default function HeroCarousel() {
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
   const images = movies?.map((movie: Movie) => movie.posterURL.lg) || [];
-  
+
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   }, [images.length]);
@@ -50,8 +50,6 @@ export default function HeroCarousel() {
     };
   }, [isAutoScrolling, lastInteractionTime, nextSlide, images.length]);
 
-
-
   if (isError || images.length === 0) {
     return (
       <div className="w-full h-[80vh] flex items-center justify-center text-red-500">
@@ -61,11 +59,16 @@ export default function HeroCarousel() {
   }
 
   return (
-    <div className="relative w-full max-md:h-[80vw] h-[80vh] overflow-hidden">
+    <div
+      data-testid="hero-carousel"
+      className="relative w-full max-md:h-[80vw] h-[80vh] overflow-hidden"
+    >
       <div className="w-full h-full overflow-hidden">
         {images.map((src, index) => (
           <div
             key={src}
+            data-testid={`hero-slide-${index}`}
+            data-visible={index === currentIndex}
             className={`absolute top-0 w-full h-full transition-transform duration-1000 ease-in-out ${
               index === currentIndex
                 ? "left-0"

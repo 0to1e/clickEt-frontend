@@ -13,6 +13,7 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
 
   return (
     <div
+      data-testid="movies-grid"
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       style={{
         gap: `${gap}px`,
@@ -20,6 +21,7 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
     >
       {movies.map((movie, index) => (
         <div
+          data-testid="movie-card"
           className=""
           key={movie._id}
           style={{
@@ -30,14 +32,14 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          <Link to={`movie/${movie.slug}`}>
-          <DominantColorExtractorCard
-            movie={movie}
-            staticContentWidth="18vw"
-            expandedContentWidth="21vw"
-            totalContentWidth="39vw"
-            minMaxHeight="47vh"
-          />
+          <Link to={`movie/${movie.slug}`} data-movie-slug={movie.slug}>
+            <DominantColorExtractorCard
+              movie={movie}
+              staticContentWidth="18vw"
+              expandedContentWidth="21vw"
+              totalContentWidth="39vw"
+              minMaxHeight="47vh"
+            />
           </Link>
         </div>
       ))}
