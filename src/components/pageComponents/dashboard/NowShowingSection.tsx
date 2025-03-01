@@ -4,7 +4,11 @@ import MoviesGrid from "@/components/common/MoviesGrid";
 
 const MovieSection = ({ variant }: MovieSectionProps) => {
   // Use the custom hook to fetch movies
-  const { data: movies = [], isLoading, isError } = useFetchAllMoviesByStatus(variant);
+  const {
+    data: movies = [],
+    isLoading,
+    isError,
+  } = useFetchAllMoviesByStatus(variant);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -31,7 +35,14 @@ const MovieSection = ({ variant }: MovieSectionProps) => {
   }
 
   return (
-    <section className="flex justify-start w-full pl-[10vw]">
+    <section
+      data-testid={
+        variant === "showing"
+          ? "now-showing-section"
+          : "upcoming-movies-section"
+      }
+      className="flex justify-start w-full pl-[10vw]"
+    >
       <div className="flex flex-col py-10 gap-12 w-full">
         <span className="w-full text-4xl text-primary font-semibold border-l-[6px] pl-2 flex items-center border-primary">
           {variant === "showing" ? "Now Showing" : "Upcoming Movies"}

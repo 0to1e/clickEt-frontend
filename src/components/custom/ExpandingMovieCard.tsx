@@ -27,17 +27,20 @@ const ExpandingCard: React.FC<ExpandingCardProps> = React.memo(
     const navigate = useNavigate();
 
     const getLuminance = useCallback((hexColor: string) => {
-      const hex = hexColor.replace('#', '');
+      const hex = hexColor.replace("#", "");
       const r = parseInt(hex.substring(0, 2), 16) / 255;
       const g = parseInt(hex.substring(2, 4), 16) / 255;
       const b = parseInt(hex.substring(4, 6), 16) / 255;
       return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }, []);
-    
-    const getContrastColor = useCallback((hexColor: string) => {
-      const luminance = getLuminance(hexColor);
-      return luminance > 0.5 ? '#000000' : '#ffffff';
-    }, [getLuminance]); // Add getLuminance as dependency
+
+    const getContrastColor = useCallback(
+      (hexColor: string) => {
+        const luminance = getLuminance(hexColor);
+        return luminance > 0.5 ? "#000000" : "#ffffff";
+      },
+      [getLuminance]
+    ); // Add getLuminance as dependency
 
     const styles = useMemo(
       () => ({
@@ -134,7 +137,11 @@ const ExpandingCard: React.FC<ExpandingCardProps> = React.memo(
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="flex-shrink-0 h-full bg-gray-500" style={styles.image}>
+        <div
+          data-testid="movie-card-img"
+          className="flex-shrink-0 h-full bg-gray-500"
+          style={styles.image}
+        >
           <ColorExtractor getColors={getColors}>
             <img
               src={movie.posterURL.sm}
@@ -145,6 +152,7 @@ const ExpandingCard: React.FC<ExpandingCardProps> = React.memo(
           </ColorExtractor>
         </div>
         <div
+          data-testid="movie-card-expanded-content"
           className="absolute right-0 top-0 h-full bg-secondary text-white p-4"
           style={styles.content}
         >

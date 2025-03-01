@@ -117,4 +117,18 @@ export const routeConfig: IRouterConfig = {
     componentLocation: "components/testPage/PaymentVerifyPage",
   },
   
+  SupportPage: {
+    path: "/support",
+    layout: ELayouts.CLIENT,
+    isProtected: true,
+    componentLocation: "pages/SupportPage",
+  },
+  
+  AboutUsPage: {
+    path: "/about",
+    layout: ELayouts.CLIENT,
+    isProtected: true,
+    componentLocation: "pages/AboutPage",
+  },
+  
 };

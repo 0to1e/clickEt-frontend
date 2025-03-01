@@ -51,3 +51,9 @@ Thumbs.db
 # JetBrains project files (optional but useful)
 .idea/
 z
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
