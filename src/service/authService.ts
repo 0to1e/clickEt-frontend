@@ -3,7 +3,7 @@ import {
   LoginCredentials,
   RegistrationCredentials,
   ResetCredentials,
-} from "@/interfaces/auth/IAuth";
+} from "@/interfaces/auth/IAuthCredentials";
 
 export async function loginUser(credentials: LoginCredentials) {
   const { data } = await axiosInstance.post("/auth/login", credentials);

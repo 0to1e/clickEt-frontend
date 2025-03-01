@@ -1,4 +1,5 @@
 // src/interfaces/auth/IAuth.ts
+
 export interface LoginCredentials {
   user_name: string;
   password: string;
@@ -15,3 +16,4 @@ export interface ResetCredentials {
   token: string;
   password: string;
 }
+

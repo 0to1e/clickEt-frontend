@@ -1,4 +1,5 @@
 // src/utils/axiosInstance.ts
+import { useAuth } from "@/hooks/useAuth";
 import axios from "axios";
 
 const baseURL = "http://localhost:8080/api/v1";
@@ -11,25 +12,28 @@ export const axiosInstance = axios.create({
   },
 });
 
-// Response interceptor
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       try {
-//         // Attempt to refresh token
-//         await axiosInstance.post("/auth/refresh");
-//         // Retry original request
-//         return axiosInstance(originalRequest);
-//       } catch (refreshError) {
-//         // Redirect to login if refresh fails
-//         window.location.href = "/login";
-//         return Promise.reject(refreshError);
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+    // Check if the error is due to an expired or missing token
+    if (error.response?.status === 401 && originalRequest.retryCount < 2) {
+      originalRequest.retryCount = originalRequest.retryCount || 0;
+      originalRequest.retryCount += 1;
+      try {
+        // Retry the original request with the new token
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // If token refresh fails, clear the user state and redirect to login
+        const { logout } = useAuth();
+        await logout();
+        window.location.href = "/login"; // Redirect to login page
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // For other errors, reject the promise
+    return Promise.reject(error);
+  }
+);

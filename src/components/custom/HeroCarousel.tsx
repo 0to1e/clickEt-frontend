@@ -68,7 +68,7 @@ export default function HeroCarousel() {
             }`}
           >
             {" "}
-            <Link to={"/register"}>
+            <Link to={"/"}>
               <img
                 src={src}
                 alt={`Slide ${index + 1}`}

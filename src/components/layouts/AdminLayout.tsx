@@ -1,13 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Layout = () => {
+const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className=" flex flex-col min-h-screen ">
       <div className="flex w-full bg-green-500">admin header</div>
-      <Outlet />
+      {children}
       <div className="flex w-full bg-green-500">admin footer</div>
     </div>
   );
 };
 
-export default Layout;
+export default AdminLayout;

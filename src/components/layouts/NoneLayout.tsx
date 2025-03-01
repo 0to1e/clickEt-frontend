@@ -1,11 +1,7 @@
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Layout = () => {
-  return (
-    <div className=" flex flex-col min-h-screen ">
-      <Outlet />
-    </div>
-  );
+const NoneLayout = ({ children }: { children: ReactNode }) => {
+  return <div className=" flex flex-col min-h-screen ">{children} </div>;
 };
 
-export default Layout;
+export default NoneLayout;

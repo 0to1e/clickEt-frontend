@@ -1,37 +1,49 @@
-// src/components/common/ErrorFallback.tsx
-"use client";
-
-import { cn } from "@/lib/utils";
-import { DotPattern } from "@/components/shadcn/dot-pattern";
 import { useNavigate } from "react-router-dom";
-import InteractiveHoverButton from "@/components/shadcn/interactive-hover-button";
-import { ArrowRight } from "lucide-react";
-function DotPatternDemo() {
-  const navigate = useNavigate();
-  return (
-    <div className="relative center h-screen w-full flex-col overflow-hidden bg-background md:shadow-xl gap-10">
-      <div className="size-[150px]">
-        <img src="src/assets/icons/logo/Logo.png" className="grayscale" />
-      </div>
-      <span className="text-primary text-2xl font-semibold">
-        This page doesn't exist !
-      </span>
-      <InteractiveHoverButton
-      className="w-52 bg-stone-600"
-      icon={<ArrowRight/>}
-        onClick={() => {
-          navigate("/");
-        }}
-      text="Head back"
-      >
-      </InteractiveHoverButton>
-      <DotPattern
-        className={cn(
-          "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
-        )}
-      />
-    </div>
-  );
+import { Button } from "@/components/shadcn/button"; // Import shadcn Button
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/shadcn/card"; // Import shadcn Card components
+
+interface IErrorFallbackProps {
+  resetErrorBoundary: (...args: unknown[]) => void;
 }
 
-export default DotPatternDemo;
+const ErrorFallback = ({ resetErrorBoundary }: IErrorFallbackProps) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center text-destructive">
+            Oops! Something went wrong.
+          </CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
+            We encountered an error. Please try again or go back to the home
+            page.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter className="flex justify-center gap-4">
+          <Button variant="destructive" onClick={() => resetErrorBoundary()}>
+            Try Again
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              navigate("/", { replace: true });
+              window.location.reload();
+            }}
+          >
+            Go Home
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+};
+
+export default ErrorFallback;

@@ -1,9 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../shadcn/button";
 import { ModeToggle } from "../shadcn/theme-toggle";
 import Menu from "../custom/ClientNavMenu";
+import { useAuth } from "@/hooks/useAuth";
+import { getNameInitials } from "@/utils/getNameInitials";
 
 const ClientHeader = () => {
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const menuCfg = [
     { title: "Home", href: "/" },
@@ -19,25 +22,37 @@ const ClientHeader = () => {
       <div className="hidden sm:flex flex-col max-sm:pl-0 max-md:pl-[10vw] md:basis-1/3 items-center">
         <Menu config={menuCfg} />
       </div>
-      <div className="space-x-2.5 flex justify-end md:basis-1/3">
+      <div className="space-x-2.5 flex justify-end items-center md:basis-1/3">
         <ModeToggle />
-
-        <div className="hidden sm:flex sm:flex-col md:flex-row gap-3">
-          <Button
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Sign in
-          </Button>
-          <Button
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register
-          </Button>
-        </div>
+        {!isAuthenticated && (
+          <div className="hidden sm:flex sm:flex-col md:flex-row gap-3">
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Sign in
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Register
+            </Button>
+          </div>
+        )}
+        {isAuthenticated && (
+          <Link to={"/uprofile"}>
+            <div className="rounded-full size-10 center bg-primary text-white cursor-pointer overflow-hidden">
+              <img
+                className="bg-primary"
+                src={user?.profile_URL}
+                alt={getNameInitials(user?.full_name || "")}
+              />
+            </div>
+          </Link>
+        )}
       </div>
     </header>
   );
