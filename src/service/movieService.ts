@@ -3,7 +3,7 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { MovieFormValues } from "@/lib/formSchemas/movieFormSchema";
 import { format } from "date-fns";
 import { decodeHTMLEntities } from "@/utils/htmlDecoder";
-import { Movie } from "@/interfaces/movie/IMovie";
+import { Movie } from "@/interfaces/IMovie";
 
 export const fetchAllMoviesbyStatus = async (
   variant: string

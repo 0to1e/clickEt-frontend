@@ -1,5 +1,5 @@
-import { FinalTheatreData } from "@/components/common/theatre/theatreForm/TheatreForm";
-import { Theatre } from "@/interfaces/theatre/ITheatre";
+import { FinalTheatreData } from "@/components/pageComponents/theatre/theatreForm/TheatreForm";
+import { Theatre } from "@/interfaces/ITheatre";
 import { axiosInstance } from "@/utils/axiosInstance";
 
 export async function addTheatre(theatreDetails: FinalTheatreData) {

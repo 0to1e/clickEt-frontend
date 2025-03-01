@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Edit, Trash2, MapPin, Phone, Mail } from "lucide-react";
 
-import AlertDialog from "../AlertDialog";
+import AlertDialog from "../../common/AlertDialog";
 
 import {
   useDeleteDistributor,

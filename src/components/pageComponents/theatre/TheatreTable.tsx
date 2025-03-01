@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/shadcn/button";
 import { Edit, Trash2, Phone, Mail, MapPin } from "lucide-react";
 
-import AlertDialog from "../AlertDialog";
+import AlertDialog from "../../common/AlertDialog";
 
 import { useDeleteTheatre, useFetchAllTheatres } from "@/api/theatreApi";
 

@@ -1,8 +1,8 @@
 import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addTheatre, deleteTheatre, fetchAllTheatres } from "@/service/theatreService";
-import { Theatre } from "@/interfaces/theatre/ITheatre";
-import { FinalTheatreData } from "@/components/common/theatre/theatreForm/TheatreForm";
+import { Theatre } from "@/interfaces/ITheatre";
+import { FinalTheatreData } from "@/components/pageComponents/theatre/theatreForm/TheatreForm";
 
 export const useAddTheatre = () => {
   return useMutation({
@@ -23,8 +23,8 @@ export const useAddTheatre = () => {
 
 export const useFetchAllTheatres = () => {
   return useQuery<Theatre[], Error>({
-    queryKey: ["theatres"], // Unique key for the query
-    queryFn: () => fetchAllTheatres(), // Use the service function
+    queryKey: ["theatres"], 
+    queryFn: () => fetchAllTheatres(),
   });
 };
 

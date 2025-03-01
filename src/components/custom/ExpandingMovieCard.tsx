@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Ticket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import InteractiveHoverButton from "@/components/shadcn/interactive-hover-button";
-import { Movie } from "@/interfaces/movie/IMovie";
+import { Movie } from "@/interfaces/IMovie";
 
 interface ExpandingCardProps {
   staticContentWidth?: string;
