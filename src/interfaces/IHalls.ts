@@ -51,4 +51,5 @@ type Section = {
 
 export type ShowData = {
   seatGrid: Section[];
+  finalPrice: number;
 };

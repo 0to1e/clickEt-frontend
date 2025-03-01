@@ -11,6 +11,11 @@ import {
   useReleaseHold,
 } from "@/api/bookingApi";
 import { bookingService } from "@/service/bookingService";
+import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "@/hooks/useAuth";
+import AlertDialog from "@/components/common/AlertDialog";
+import KhaltiPayment from "@/components/testPage/KhaltiPayment";
 
 type SeatIconProps = {
   status: "available" | "held" | "booked" | "selected";
@@ -67,12 +72,19 @@ type SeatLayoutProps = {
 };
 
 export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<Set<string>>(new Set());
   const [holdId, setHoldId] = useState<string | null>(null);
   const [holdTimer, setHoldTimer] = useState<number | null>(null);
   const [bookingStep, setBookingStep] = useState<"select" | "hold" | "payment">(
     "select"
   );
+  const [paymentMethod, setPaymentMethod] = useState<
+    "direct" | "khalti" | null
+  >(null);
 
   const { data: showData, error, isLoading } = useSeatLayout(screeningId);
 
@@ -163,6 +175,8 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
       return;
     }
 
+    if (!user) setAuthDialogOpen(true);
+
     try {
       const seats = Array.from(selectedSeats).map((seatId) => {
         const parsedSeat = parseSeatId(seatId);
@@ -196,24 +210,40 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
       return;
     }
 
-    try {
-      await confirmBookingMutation.mutateAsync({
-        screeningId,
-        holdId,
-        paymentInfo: {
-          // Add payment info here
-        },
-      });
+    // For direct confirmation (without Khalti)
+    if (paymentMethod === "direct") {
+      try {
+        await confirmBookingMutation.mutateAsync({
+          screeningId,
+          holdId,
+          paymentInfo: {
+            // Add payment info here
+          },
+        });
 
-      setBookingStep("select");
-      clearHoldTimer();
-      toast.success("Booking confirmed successfully");
-      const pdfUrl = await bookingService.downloadTicket();
-      window.open(pdfUrl, "_blank");
-      // Trigger ticket download
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to confirm booking");
+        setBookingStep("select");
+        clearHoldTimer();
+        toast.success("Booking confirmed successfully");
+        const pdfUrl = await bookingService.downloadTicket();
+        window.open(pdfUrl, "_blank");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to confirm booking");
+      }
+    } else {
+      // Set payment method to Khalti if not already set
+      setPaymentMethod("khalti");
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    setPaymentMethod(null);
+    setBookingStep("select");
+    clearHoldTimer();
+    setSelectedSeats(new Set());
+  };
+
+  const handlePaymentCancel = () => {
+    setPaymentMethod(null);
   };
 
   const releaseHeldSeats = async () => {
@@ -335,11 +365,12 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
   }
 
   if (error) {
-    return <div className="text-red-500 text-center p-4">{`${error}`}</div>;
+    return <div className="text-primary text-center p-4">{`${error}`}</div>;
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-5xl mx-auto p-4  mt-5 flex flex-col items-center bg-secondary">
+      <span className="text-2xl font-semibold text-primary my-5 ">Please select your seats</span>
       {/* Screen */}
       <div className="w-full max-w-3xl mx-auto mb-8">
         <div className="h-8 bg-primary rounded-sm flex items-center justify-center text-white">
@@ -445,26 +476,72 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
 
           {bookingStep === "hold" && (
             <>
-              <Button
-                onClick={confirmBooking}
-                disabled={confirmBookingMutation.isPending}
-              >
-                {confirmBookingMutation.isPending
-                  ? "Confirming..."
-                  : "Confirm Booking"}
-              </Button>
-              <Button
-                onClick={releaseHeldSeats}
-                disabled={releaseHoldMutation.isPending}
-              >
-                {releaseHoldMutation.isPending
-                  ? "Releasing..."
-                  : "Release Hold"}
-              </Button>
+              {paymentMethod === "khalti" ? (
+                <KhaltiPayment
+                  holdId={holdId as string}
+                  screeningId={screeningId}
+                  amount={showData?.finalPrice * selectedSeats.size}
+                  onSuccess={handlePaymentSuccess}
+                  onCancel={handlePaymentCancel}
+                />
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium">
+                      Choose payment method
+                    </h3>
+                  </div>
+                  <div className="flex justify-center gap-4">
+                    <Button
+                      onClick={() => setPaymentMethod("direct")}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Direct Confirmation
+                    </Button>
+                    <Button
+                      onClick={() => setPaymentMethod("khalti")}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      Pay with Khalti
+                    </Button>
+                    <Button
+                      onClick={releaseHeldSeats}
+                      disabled={releaseHoldMutation.isPending}
+                      variant="outline"
+                    >
+                      {releaseHoldMutation.isPending
+                        ? "Releasing..."
+                        : "Release Hold"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </>
+          )}
+
+          {bookingStep === "hold" && paymentMethod === "direct" && (
+            <Button
+              onClick={confirmBooking}
+              disabled={confirmBookingMutation.isPending}
+            >
+              {confirmBookingMutation.isPending
+                ? "Confirming..."
+                : "Confirm Booking"}
+            </Button>
           )}
         </div>
       </div>
+      <AlertDialog
+        isOpen={authDialogOpen}
+        onClose={() => setAuthDialogOpen(false)}
+        onConfirm={() => {
+          navigate("/login");
+        }}
+        description="In order to book a seat, you must login first."
+        isProcessing={false}
+        actionText="Proceed to Login"
+        processingText="Login"
+      />
     </div>
   );
 };

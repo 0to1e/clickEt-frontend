@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Button } from "@/components/shadcn/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Switch } from "@/components/shadcn/switch";
 
 import AlertDialog from "@/components/common/AlertDialog";
@@ -31,6 +31,7 @@ import {
 } from "@/api/hallApi";
 import { useFetchAllTheatres } from "@/api/theatreApi";
 import EditHallDialog from "./UpdateLayoutDialog";
+import { Card } from "@/components/shadcn/card";
 
 interface Hall {
   _id: string;
@@ -50,7 +51,12 @@ interface Hall {
   };
 }
 
-const HallsTable = () => {
+interface HallsTableProps {
+  formState: boolean;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const HallsTable: React.FC<HallsTableProps> = ({ formState, setShowForm }) => {
   const [selectedTheatre, setSelectedTheatre] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedHallId, setSelectedHallId] = useState<string>("");
@@ -112,10 +118,20 @@ const HallsTable = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <Card className="space-y-4 p-4">
       {/* Filters */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Halls</h2>
+        <div className="flex gap-3">
+          <h2 className="text-2xl font-bold">Halls</h2>
+          <Button
+            onClick={() => {
+              setShowForm(!formState);
+            }}
+          >
+            <Plus />
+            <span>Add Hall</span>
+          </Button>
+        </div>
         <div className="flex items-center gap-4">
           {/* Theatre Filter */}
           <div className="w-[200px]">
@@ -242,7 +258,7 @@ const HallsTable = () => {
           hall={selectedHall}
         />
       )}
-    </div>
+    </Card>
   );
 };
 

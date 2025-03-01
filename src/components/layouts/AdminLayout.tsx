@@ -1,13 +1,21 @@
 import { ReactNode } from "react";
 
+import { SidebarProvider, SidebarTrigger } from "@/components/shadcn/sidebar"
+import { AppSidebar } from "../shadcn/app-sidebar";
+
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className=" flex flex-col min-h-screen ">
-      <div className="flex w-full bg-green-500">admin header</div>
-      {children}
-      <div className="flex w-full bg-green-500">admin footer</div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+        <SidebarTrigger />
+      <main className="w-full flex flex-col items-center py-10">
+        <div className="w-full">
+        {children}
+        </div>
+      </main>
+    </SidebarProvider>
   );
 };
 
 export default AdminLayout;
+

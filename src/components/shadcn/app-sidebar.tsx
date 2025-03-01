@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -10,19 +10,20 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/shadcn/nav-main"
-import { NavProjects } from "@/components/shadcn/nav-projects"
-import { NavUser } from "@/components/shadcn/nav-user"
-import { TeamSwitcher } from "@/components/shadcn/team-switcher"
+import { useAuth } from "@/hooks/useAuth";
+import { NavMain } from "@/components/shadcn/nav-main";
+import { NavProjects } from "@/components/shadcn/nav-projects";
+import { NavUser } from "@/components/shadcn/nav-user";
+import { TeamSwitcher } from "@/components/shadcn/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/shadcn/sidebar"
+} from "@/components/shadcn/sidebar";
 
 // This is sample data.
 const data = {
@@ -33,12 +34,12 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "ClickEt",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "Admin Dashboard",
     },
     {
-      name: "Acme Corp.",
+      name: "Distributor",
       logo: AudioWaveform,
       plan: "Startup",
     },
@@ -57,7 +58,7 @@ const data = {
       items: [
         {
           title: "History",
-          url: "#",
+          url: "/admin/distributors",
         },
         {
           title: "Starred",
@@ -152,9 +153,15 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const  { user }  = useAuth();
+  const userData = {
+    name: user?.full_name || "",
+    email: user?.email || "",
+    avatar: user?.profile_URL || "",
+  };
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -162,12 +169,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

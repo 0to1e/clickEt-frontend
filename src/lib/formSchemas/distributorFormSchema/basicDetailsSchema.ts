@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const DistributorSchema = z.object({
+  id: z.string(),
   name: z
     .string()
     .nonempty("Name is required")

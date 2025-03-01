@@ -4,6 +4,7 @@ import {
   DistributorLogoRequest,
   DistributorResponse,
 } from "@/interfaces/Idistributor";
+import { Hall } from "@/interfaces/IHalls";
 import { axiosInstance } from "@/utils/axiosInstance";
 
 export async function addDistributor(credentials: DistributorBase) {
@@ -35,6 +36,14 @@ export const fetchDistributorsByMovie = async (
 
 export async function deleteDistributor(id: string) {
   const response = await axiosInstance.delete(`/distributor/delete/${id}`);
+  return response.data;
+}
+
+export async function updateDistributor(updatedDistributorData) {
+  const response = await axiosInstance.patch(
+    `/hall/update/${updatedDistributorData._id}`,
+    updatedDistributorData
+  );
   return response.data;
 }
 

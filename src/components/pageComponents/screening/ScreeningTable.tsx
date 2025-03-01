@@ -15,12 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Plus } from "lucide-react";
 import { Card } from "@/components/shadcn/card";
 import { useFetchAllScreenings, useDeleteScreening } from "@/api/screeningApi";
 import AlertDialog from "@/components/common/AlertDialog";
 
-const ScreeningsTable = () => {
+interface ScreeningsTableProps {
+  formState: boolean;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ScreeningsTable: React.FC<ScreeningsTableProps> = ({
+  formState,
+  setShowForm,
+}) => {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedScreeningId, setSelectedScreeningId] = useState<string | null>(
@@ -58,7 +66,17 @@ const ScreeningsTable = () => {
     <div>
       <Card className="max-w-[90vw] p-1">
         <div className="flex justify-between items-center p-4">
-          <h2 className="text-xl font-semibold">Screenings</h2>
+        <div className="flex gap-3">
+          <h2 className="text-2xl font-bold">Screenings</h2>
+          <Button
+            onClick={() => {
+              setShowForm(!formState);
+            }}
+          >
+            <Plus />
+            <span>Add Screenings</span>
+          </Button>
+        </div>
           <Select onValueChange={(value) => setFilterStatus(value as string)}>
             <SelectTrigger className="w-fit">
               <SelectValue placeholder="Filter by status" />

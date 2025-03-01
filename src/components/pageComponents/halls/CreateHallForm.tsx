@@ -73,7 +73,7 @@ const CreateHallForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <Card className="w-fit min-w-[50vw] p-5">
+      <Card className="w-full min-w-[50vw] p-5">
         <CardHeader>
           <CardTitle>Create a Hall</CardTitle>
         </CardHeader>
