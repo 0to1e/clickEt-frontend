@@ -4,6 +4,7 @@ import { ModeToggle } from "../shadcn/theme-toggle";
 import Menu from "../custom/ClientNavMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { getNameInitials } from "@/utils/getNameInitials";
+import { MapPin } from "lucide-react";
 
 const ClientHeader = () => {
   const { user, isAuthenticated } = useAuth();
@@ -15,17 +16,25 @@ const ClientHeader = () => {
   ];
 
   return (
-    <header className="absolute top-0 w-full flex justify-between z-10 p-4">
-      <div className="shrink-0 md:basis-1/3">
-        <img src="src/assets/icons/logo/Logo.png" alt="ClickEt" width={50} />
+    <header className="absolute top-0 w-full flex justify-between z-10 p-4 space-x-4">
+      <div className=" place-content-center md:basis-[10%] shrink-0">
+        <Link to={"/"}>
+          <img src="src/assets/icons/logo/Logo.png" alt="ClickEt" width={50} />
+        </Link>
       </div>
-      <div className="hidden sm:flex flex-col max-sm:pl-0 max-md:pl-[10vw] md:basis-1/3 items-center">
+      <div className="hidden sm:flex gap-1.5 max-sm:pl-0  items-center border-primary">
+        <button className="py-4 text-white flex gap-2 bg-secondary rounded-md items-center px-4">
+          <MapPin size={22} className="text-primary" />
+          <span className="hidden md:block text-primary hover:underline">
+            Kathmandu
+          </span>
+        </button>
         <Menu config={menuCfg} />
       </div>
-      <div className="space-x-2.5 flex justify-end items-center md:basis-1/3">
+      <div className="space-x-2.5 flex justify-end items-center">
         <ModeToggle />
         {!isAuthenticated && (
-          <div className="hidden sm:flex sm:flex-col md:flex-row gap-3">
+          <div className="hidden sm:flex sm:flex-col md:flex-row gap-3 ">
             <Button
               onClick={() => {
                 navigate("/login");

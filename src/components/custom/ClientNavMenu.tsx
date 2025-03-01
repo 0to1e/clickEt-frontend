@@ -76,7 +76,7 @@ const Menu: React.FC<MenuProps> = ({ config }) => {
             href={item.href}
             onClick={() => setSelectedIndex(idx)}
             className={`text-center whitespace-nowrap ${
-              item.className || "hover:text-black text-white"
+              item.className || "text-white"
             }`}
           >
             {item.title}

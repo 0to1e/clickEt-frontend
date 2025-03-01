@@ -145,7 +145,7 @@ const RegistrationPage = () => {
                   )}
                 />
                 <div className="mx-auto flex flex-col gap-6">
-                  <Button type="submit" className="px-10">
+                  <Button type="submit" disabled={registerMutation.isPending} className="px-10">
                     Register
                   </Button>
 

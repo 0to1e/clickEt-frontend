@@ -15,7 +15,10 @@ import { Label } from "@/components/shadcn/label";
 import { EyeOff, Eye } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormSchema, LoginFormValues } from "@/lib/formSchemas/authFormSchema";
+import {
+  LoginFormSchema,
+  LoginFormValues,
+} from "@/lib/formSchemas/authFormSchema";
 
 import { useForm } from "react-hook-form";
 
@@ -24,7 +27,6 @@ import { Link } from "react-router-dom";
 import { useLogin } from "@/api/authApi";
 
 // Simplified form schema
-
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -100,13 +102,17 @@ const LoginPage = () => {
                   )}
                 />
                 <Label htmlFor="password-reset">
-                <Link to={"/auth/forget-password"}>
-                  <span className="underline">Forgot Password?</span>
-                </Link>
+                  <Link to={"/auth/forget-password"}>
+                    <span className="underline">Forgot Password?</span>
+                  </Link>
                 </Label>
                 {/* Submit Button */}
                 <div className="mx-auto pt-5 flex flex-col gap-6">
-                  <Button type="submit" className="mx-auto px-10">
+                  <Button
+                    type="submit"
+                    disabled={loginMutation.isPending}
+                    className="mx-auto px-10"
+                  >
                     Login
                   </Button>
                   <Label htmlFor="navigateLogin">

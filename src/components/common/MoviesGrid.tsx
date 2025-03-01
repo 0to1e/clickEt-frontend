@@ -1,0 +1,48 @@
+import React, { useState } from "react";
+import { Movie } from "@/interfaces/movie/IMovie";
+import DominantColorExtractorCard from "../custom/ExpandingMovieCard";
+import { Link } from "react-router-dom";
+
+interface MoviesGridProps {
+  movies: Movie[];
+  gap?: number; // Gap in pixels
+}
+
+const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  return (
+    <div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      style={{
+        gap: `${gap}px`,
+      }}
+    >
+      {movies.map((movie, index) => (
+        <div
+          className=""
+          key={movie._id}
+          style={{
+            position: "relative",
+            zIndex: hoveredIndex === index ? 10 : 1,
+            transition: "z-index 0ms",
+          }}
+          onMouseEnter={() => setHoveredIndex(index)}
+          onMouseLeave={() => setHoveredIndex(null)}
+        >
+          <Link to={`movie/${movie.slug}`}>
+          <DominantColorExtractorCard
+            movie={movie}
+            staticContentWidth="18vw"
+            expandedContentWidth="21vw"
+            totalContentWidth="39vw"
+            minMaxHeight="47vh"
+          />
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default MoviesGrid;

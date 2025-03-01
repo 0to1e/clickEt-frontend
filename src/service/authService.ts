@@ -5,6 +5,11 @@ import {
   ResetCredentials,
 } from "@/interfaces/auth/IAuthCredentials";
 
+import {
+  ImageUploadRequest,
+  ImageUploadResponse,
+} from "@/interfaces/auth/IImage";
+
 export async function loginUser(credentials: LoginCredentials) {
   const { data } = await axiosInstance.post("/auth/login", credentials);
   return data;
@@ -29,3 +34,25 @@ export async function resetPassword(credentials: ResetCredentials) {
   );
   return data;
 }
+
+export const uploadProfileImage = async ({
+  image,
+  currentImageUrl,
+}: ImageUploadRequest): Promise<ImageUploadResponse> => {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  if (currentImageUrl) {
+    formData.append("currentImageUrl", currentImageUrl);
+  }
+
+  const response = await axiosInstance.patch<ImageUploadResponse>(
+    "/auth//user/upload",
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+
+  return response.data;
+};

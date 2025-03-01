@@ -43,25 +43,25 @@ export const routeConfig: IRouterConfig = {
     path: "/404",
     layout: ELayouts.NA,
     isProtected: false,
-    componentLocation: "pages/NotFoundPage",
+    componentLocation: "pages/utilPages/NotFoundPage",
   },
   UnauthorizedPage: {
     path: "/unauthorized",
     layout: ELayouts.NA,
     isProtected: false,
-    componentLocation: "pages/UnauthorizedPage",
+    componentLocation: "pages/utilPages/UnauthorizedPage",
   },
   TestPage: {
     path: "/test",
     layout: ELayouts.NA,
-    isProtected: true,
+    isProtected: false,
     componentLocation: "pages/TestPage",
   },
   ProfilePicturePage: {
     path: "/uprofile",
     layout: ELayouts.NA,
     isProtected: true,
-    componentLocation: "components/common/ImageUploads",
+    componentLocation: "pages/utilPages/ProfileUpload",
   },
   AddMovies: {
     path: "/movie/add",
@@ -69,4 +69,12 @@ export const routeConfig: IRouterConfig = {
     isProtected: true,
     componentLocation: "pages/movie/AddmovieForm",
   },
+  
+  MovieDetailsPage: {
+    path: "/movie/:slug",
+    layout: ELayouts.CLIENT,
+    isProtected: false,
+    componentLocation: "pages/movie/movieDetailsPage",
+  },
+  
 };
