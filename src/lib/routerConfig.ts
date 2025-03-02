@@ -36,6 +36,13 @@ export const routeConfig: IRouterConfig = {
   },
   //==============================================  admin pages =====================================
 
+  AdminMoviesPage: {
+    path: "/admin/movies",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminMoviesPage",
+  },
   AdminDistributorPage: {
     path: "/admin/distributors",
     layout: ELayouts.ADMIN,
@@ -64,7 +71,20 @@ export const routeConfig: IRouterConfig = {
     roles: [ERoles.ADMIN],
     componentLocation: "pages/admin/AdminScreeningPage",
   },
-
+  AdmninBookingPage: {
+    path: "/admin/bookings",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminBookingsPage",
+  },
+  AdmninPaymentsPage: {
+    path: "/admin/payments",
+    layout: ELayouts.ADMIN,
+    isProtected: true,
+    roles: [ERoles.ADMIN],
+    componentLocation: "pages/admin/AdminPaymentsPage",
+  },
 
   //==============================================  utility pages =====================================
 
@@ -80,13 +100,6 @@ export const routeConfig: IRouterConfig = {
     isProtected: false,
     componentLocation: "pages/utilPages/UnauthorizedPage",
   },
-  TestPage: {
-    path: "/test",
-    layout: ELayouts.NA,
-    isProtected: false,
-    componentLocation: "pages/TestPage",
-  },
-
 
   //==============================================  feature pages =====================================
 
@@ -102,33 +115,38 @@ export const routeConfig: IRouterConfig = {
     isProtected: true,
     componentLocation: "pages/movie/AddmovieForm",
   },
-  
+
   MovieDetailsPage: {
     path: "/movie/:slug",
     layout: ELayouts.CLIENT,
     isProtected: false,
     componentLocation: "pages/movie/movieDetailsPage",
   },
-  
+
   PaymentVerificationPage: {
     path: "/payment/verify/*",
     layout: ELayouts.CLIENT,
     isProtected: true,
-    componentLocation: "components/testPage/PaymentVerifyPage",
+    componentLocation: "components/pageComponents/payment/PaymentVerifyPage",
   },
-  
+
   SupportPage: {
     path: "/support",
     layout: ELayouts.CLIENT,
     isProtected: true,
     componentLocation: "pages/SupportPage",
   },
-  
+
   AboutUsPage: {
     path: "/about",
     layout: ELayouts.CLIENT,
     isProtected: true,
     componentLocation: "pages/AboutPage",
   },
-  
+  BookingsPage: {
+    path: "/bookings",
+    layout: ELayouts.CLIENT,
+    isProtected: true,
+    componentLocation: "pages/BookingPage",
+  },
 };
