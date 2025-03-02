@@ -56,3 +56,8 @@ export const uploadProfileImage = async ({
 
   return response.data;
 };
+
+export async function sendLogoutRequest() {
+  const { data } = await axiosInstance.post("/auth/logout/");
+  return data;
+}

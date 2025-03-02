@@ -53,6 +53,9 @@ export const hallService = {
     const response = await axiosInstance.get(
       `/screening/${screeningId}/layout`
     );
-    return { seatGrid: response.data.seatGrid, finalPrice: response.data.price };
+    return {
+      seatGrid: response.data.seatGrid,
+      finalPrice: response.data.price,
+    };
   },
 };

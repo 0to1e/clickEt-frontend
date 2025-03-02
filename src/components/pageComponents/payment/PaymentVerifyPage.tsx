@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
-import { useVerifyKhaltiPayment } from "@/api/bookingApi";
+import { useVerifyKhaltiPayment } from "@/api/paymentApi";
 import { bookingService } from "@/service/bookingService";
+import { Card } from "@/components/shadcn/card";
 
 const PaymentVerifyPage: React.FC = () => {
   const location = useLocation();
@@ -41,7 +42,7 @@ const PaymentVerifyPage: React.FC = () => {
         }
 
         const response = await verifyPaymentMutation.mutateAsync({ pidx });
-        
+
         // Check if payment was already verified
         if (response?.status === "already_confirmed") {
           toast.info("Payment was already confirmed");
@@ -54,7 +55,7 @@ const PaymentVerifyPage: React.FC = () => {
         try {
           const pdfUrl = await bookingService.downloadTicket();
           window.open(pdfUrl, "_blank");
-        } catch (err) {
+        } catch (error) {
           toast.error("Ticket download failed, please check your bookings");
         }
       } catch (err: any) {
@@ -72,7 +73,9 @@ const PaymentVerifyPage: React.FC = () => {
     const timeoutId = setTimeout(() => {
       if (verifying) {
         setVerifying(false);
-        setError("Verification timed out. Please check your bookings to confirm payment status.");
+        setError(
+          "Verification timed out. Please check your bookings to confirm payment status."
+        );
       }
     }, 30000);
 
@@ -80,8 +83,8 @@ const PaymentVerifyPage: React.FC = () => {
   }, [verifying]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+    <div className="flex flex-col items-center justify-center min-h-[97vh] p-4">
+      <Card className="p-8 max-w-md w-full text-center">
         {verifying ? (
           <div className="flex flex-col items-center space-y-4">
             <Loader2 className="h-16 w-16 text-primary animate-spin" />
@@ -94,7 +97,7 @@ const PaymentVerifyPage: React.FC = () => {
           <div className="flex flex-col items-center space-y-4">
             <CheckCircle className="h-16 w-16 text-green-500" />
             <h2 className="text-2xl font-bold">Payment Successful!</h2>
-            <p className="text-gray-600">
+            <p className="text-stone-500">
               Your booking has been confirmed. You can view your tickets in your
               booking history.
             </p>
@@ -119,7 +122,7 @@ const PaymentVerifyPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

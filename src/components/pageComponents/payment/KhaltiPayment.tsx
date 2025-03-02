@@ -8,7 +8,7 @@ import {
   useInitiateKhaltiPayment,
   useVerifyKhaltiPayment,
   useGetKhaltiPaymentStatus,
-} from "@/api/bookingApi";
+} from "@/api/paymentApi";
 import { bookingService } from "@/service/bookingService";
 import { useAuth } from "@/hooks/useAuth";
 

@@ -4,16 +4,15 @@ import {
   loginUser,
   registerUser,
   resetPassword,
+  sendLogoutRequest,
   sendResetEmail,
   uploadProfileImage,
 } from "@/service/authService";
-import { useAuth } from "@/hooks/useAuth";
 
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useLogin = () => {
-  const { user } = useAuth();
   return useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
@@ -22,12 +21,7 @@ export const useLogin = () => {
       });
 
       setTimeout(() => {
-        if (user?.role === "ADMIN") {
-          window.location.href = "/admin/movies";
-        }
-        else{
-          window.location.href = "/";
-        }
+        window.location.href = "/";
       }, 2000);
     },
     onError: (error: any) => {
@@ -98,6 +92,24 @@ export const useProfileImageUpload = () => {
     onError: (error: any) => {
       console.error("Upload error:", error);
       toast.error(error.response?.data?.message || "Upload failed");
+    },
+  });
+};
+
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: () => sendLogoutRequest(),
+    onSuccess: () => {
+      toast.success("Logged out successfully", {
+        className: "text-white border-success",
+      });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    },
+    onError: (error: any) => {
+      console.error("Logout error:", error);
+      toast.error(error.response?.data?.message || "Logout failed");
     },
   });
 };

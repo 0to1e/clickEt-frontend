@@ -3,25 +3,39 @@ import {
   AudioWaveform,
   BookOpen,
   Bot,
+  Building,
+  Building2Icon,
   Command,
   Frame,
   GalleryVerticalEnd,
+  Glasses,
+  IndianRupee,
   Map,
   PieChart,
+  RectangleHorizontal,
   Settings2,
   SquareTerminal,
+
+  TicketIcon,
+
+  Video,
 } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
-import { NavMain } from "@/components/shadcn/nav-main";
-import { NavProjects } from "@/components/shadcn/nav-projects";
+
 import { NavUser } from "@/components/shadcn/nav-user";
 import { TeamSwitcher } from "@/components/shadcn/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/shadcn/sidebar";
 
@@ -135,6 +149,7 @@ const data = {
         },
       ],
     },
+    
   ],
   projects: [
     {
@@ -160,16 +175,70 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userData = {
     name: user?.full_name || "",
     email: user?.email || "",
-    avatar: user?.profile_URL || "",
+    profile_URL: user?.profile_URL || "",
   };
+
+  const items = [
+    {
+      title: "Movies",
+      url: "/admin/movies",
+      icon: Video,
+    },
+    {
+      title: "Distributors",
+      url: "/admin/distributors",
+      icon: Building2Icon,
+    },
+    {
+      title: "Theatres",
+      url: "/admin/theatres",
+      icon: Building,
+    },
+    {
+      title: "Halls",
+      url: "/admin/halls",
+      icon: RectangleHorizontal,
+    },
+    {
+      title: "Screeninigs",
+      url: "/admin/screenings",
+      icon: Glasses,
+    },
+    {
+      title: "Bookings",
+      url: "/admin/bookings",
+      icon: TicketIcon,
+    },
+    {
+      title: "Payments",
+      url: "/admin/payments",
+      icon: IndianRupee,
+    },
+  ]
+  
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Manage Entities</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userData} />

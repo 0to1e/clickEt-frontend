@@ -11,12 +11,10 @@ export const fetchAllMoviesbyStatus = async (
   const url = `/movie/status/${variant}`;
   const response = await axiosInstance.get(url);
 
-  // If the response data is undefined or null, return an empty array
   if (!response.data?.movies) {
     return [];
   }
 
-  // Decode HTML entities in the URLs
   const decodedMovies = response.data.movies.map((movie: Movie) => ({
     ...movie,
     posterURL: {
@@ -75,3 +73,13 @@ export async function fetchMovieBySlug(slug: string) {
     return null;
   }
 }
+
+export const toggleMovieStatus = async (movie_id: string): Promise<Movie> => {
+  const response = await axiosInstance.patch(`/movie/toggle/${movie_id}`);
+  return response.data;
+};
+
+export const deleteMovie = async (id: string) => {
+  const response = await axiosInstance.delete(`/movie/delete/${id}`);
+  return response.data;
+};
