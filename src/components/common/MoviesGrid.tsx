@@ -5,10 +5,16 @@ import { Link } from "react-router-dom";
 
 interface MoviesGridProps {
   movies: Movie[];
-  gap?: number; // Gap in pixels
+
+  rowGap?: number;
+  colGap?: number;
 }
 
-const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
+const MoviesGrid: React.FC<MoviesGridProps> = ({
+  rowGap = 30,
+  colGap = 0,
+  movies,
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
@@ -16,7 +22,8 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ gap = 0, movies }) => {
       data-testid="movies-grid"
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       style={{
-        gap: `${gap}px`,
+        rowGap: `${rowGap}px`,
+        columnGap: `${colGap}px`,
       }}
     >
       {movies.map((movie, index) => (
