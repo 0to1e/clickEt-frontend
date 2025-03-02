@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks/useAuth";
 import AlertDialog from "@/components/common/AlertDialog";
-import KhaltiPayment from "@/components/testPage/KhaltiPayment";
+import KhaltiPayment from "@/components/pageComponents/payment/KhaltiPayment";
 
 type SeatIconProps = {
   status: "available" | "held" | "booked" | "selected";
@@ -184,6 +184,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
           section: parsedSeat.section,
           row: parsedSeat.row,
           seatNumber: parsedSeat.seatIndex,
+          seatId: seatId,
         };
       });
 
@@ -370,7 +371,9 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({ screeningId }) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4  mt-5 flex flex-col items-center bg-secondary">
-      <span className="text-2xl font-semibold text-primary my-5 ">Please select your seats</span>
+      <span className="text-2xl font-semibold text-primary my-5 ">
+        Please select your seats
+      </span>
       {/* Screen */}
       <div className="w-full max-w-3xl mx-auto mb-8">
         <div className="h-8 bg-primary rounded-sm flex items-center justify-center text-white">

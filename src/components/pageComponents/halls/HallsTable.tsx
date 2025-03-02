@@ -248,7 +248,7 @@ const HallsTable: React.FC<HallsTableProps> = ({ formState, setShowForm }) => {
         onConfirm={handleDeleteConfirm}
         description="This action cannot be undone. This will permanently remove this hall and their data from our servers."
         isProcessing={deleteHallMutation.isPending}
-        actionText="Delete Distributor"
+        actionText="Delete Hall"
         processingText="Deleting"
       />
       {selectedHall && (
