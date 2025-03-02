@@ -1,6 +1,5 @@
 import { useState, useRef, DragEvent, ChangeEvent } from "react";
 import { Button } from "@/components/shadcn/button";
-import { Card } from "@/components/shadcn/card";
 import { Upload, X } from "lucide-react";
 import { ImageFile } from "@/interfaces/auth/IImage";
 
@@ -65,7 +64,7 @@ const ImageUploader = ({
   };
 
   return (
-    <Card className="w-96 h-96 flex flex-col items-center justify-center gap-12 p-6">
+    <div className="w-96 h-96 flex flex-col items-center justify-center gap-12 p-6">
       <div
         className={`relative w-64 h-64 rounded-full overflow-hidden ${
           dragActive
@@ -142,7 +141,7 @@ const ImageUploader = ({
       >
         {isUploading ? "Updating..." : `Update ${buttonText}`}
       </Button>
-    </Card>
+    </div>
   );
 };
 
